@@ -10,5 +10,11 @@ export default defineNuxtConfig({
     '@nuxt/fonts',
     '@nuxt/eslint',
     '@nuxt/ui'
-  ]
+  ],
+
+  runtimeConfig: {
+    public: {
+      API_BASE_URL: process.env.API_BASE_URL
+    }
+  }
 })
