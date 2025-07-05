@@ -1,15 +1,14 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+const counter = useState('counter', () => Math.round(Math.random() * 1000))
 const username = ref('')
 const password = ref('')
 const error = ref('')
 
-const config = useRuntimeConfig()
-
 async function login() {
   error.value = ''
   try {
-    const res = await fetch(`${config.public.API_BASE_URL}/login`, {
+    const res = await fetch(`/api/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -31,7 +30,7 @@ async function login() {
 
 <template>
   <div class="login-container">
-    <h1>Login</h1>
+    <h1>Login{{ counter }}</h1>
     <form @submit.prevent="login">
       <label>
         Username:
@@ -39,7 +38,7 @@ async function login() {
       </label>
       <label>
         Password:
-        <input v-model="password" type="password" required />
+        <input id="password" v-model="password" required />
       </label>
       <button type="submit">Login</button>
       <p v-if="error" class="error">{{ error }}</p>
@@ -62,5 +61,8 @@ label {
 .error {
   color: red;
   margin-top: 1rem;
+}
+#password {
+  color: white;
 }
 </style>
