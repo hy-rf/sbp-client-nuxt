@@ -10,6 +10,7 @@ export default defineNuxtConfig({
     "@nuxt/fonts",
     "@nuxt/eslint",
     "@nuxt/ui",
+    "@pinia/nuxt",
   ],
 
   runtimeConfig: {
@@ -20,6 +21,6 @@ export default defineNuxtConfig({
   nitro: {
     routeRules: {
       "/api/**": { proxy: `${process.env.NUXT_PUBLIC_API_BASE_URL}/**` },
-    }
-  }
+    },
+  },
 });
