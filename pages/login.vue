@@ -37,7 +37,7 @@ async function login() {
       </label>
       <label>
         Password:
-        <input id="password" v-model="password" required />
+        <input id="password" v-model="password" type="password" required />
       </label>
       <button type="submit">Login</button>
       <p v-if="error" class="error">{{ error }}</p>
