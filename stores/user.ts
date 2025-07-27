@@ -10,7 +10,6 @@ export const useUserStore = defineStore("user", {
     async fetchUser() {
       try {
         const res = await fetch("/api/me", { credentials: "include" });
-        if (!res.ok) throw new Error("Failed to fetch user");
         const data = await res.json();
         this.username = data.username;
         this.roles = data.roles;
