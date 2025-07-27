@@ -1,36 +1,35 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-const counter = useState('counter', () => Math.round(Math.random() * 1000))
-const username = ref('')
-const password = ref('')
-const error = ref('')
+import { ref } from "vue";
+const username = ref("");
+const password = ref("");
+const error = ref("");
 
 async function login() {
-  error.value = ''
+  error.value = "";
   try {
     const res = await fetch(`/api/login`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         username: username.value,
         password: password.value,
       }),
-      credentials: 'include',
-    })
+      credentials: "include",
+    });
     if (res.ok) {
-      alert('Login successful!')
+      alert("Login successful!");
     } else {
-      error.value = 'Invalid credentials'
+      error.value = "Invalid credentials";
     }
   } catch {
-    error.value = 'Login failed'
+    error.value = "Login failed";
   }
 }
 </script>
 
 <template>
   <div class="login-container">
-    <h1>Login{{ counter }}</h1>
+    <h1>Login</h1>
     <form @submit.prevent="login">
       <label>
         Username:

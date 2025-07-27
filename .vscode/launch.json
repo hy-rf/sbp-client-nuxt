@@ -5,17 +5,12 @@
       "type": "node",
       "request": "launch",
       "name": "Debug Nuxt Dev (sbp-client-nuxt)",
-      "cwd": "${workspaceFolder}/sbp-client-nuxt",
+      "cwd": "${workspaceFolder}",
       "runtimeExecutable": "npm",
-      "runtimeArgs": [
-        "run",
-        "dev"
-      ],
+      "runtimeArgs": ["run", "dev"],
       "autoAttachChildProcesses": true,
       "console": "integratedTerminal",
-      "skipFiles": [
-        "<node_internals>/**"
-      ]
+      "skipFiles": ["<node_internals>/**"]
     }
   ]
 }

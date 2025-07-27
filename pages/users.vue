@@ -18,7 +18,7 @@
           <td>{{ user.username }}</td>
           <td>{{ user.email }}</td>
           <td>{{ user.fullName }}</td>
-          <td>{{ user.isActive ? 'Yes' : 'No' }}</td>
+          <td>{{ user.isActive ? "Yes" : "No" }}</td>
           <td>
             <ul>
               <li v-for="role in user.roles" :key="role.id">{{ role.name }}</li>
@@ -31,19 +31,19 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted } from "vue";
 
-const users = ref([])
+const users = ref([]);
 
 onMounted(async () => {
   try {
-    const res = await fetch('/api/users')
-    if (!res.ok) throw new Error('Failed to fetch users')
-    users.value = await res.json()
+    const res = await fetch("/api/users");
+    if (!res.ok) throw new Error("Failed to fetch users");
+    users.value = await res.json();
   } catch (err) {
-    console.error(err)
+    console.error(err);
   }
-})
+});
 </script>
 
 <style scoped>
@@ -65,7 +65,8 @@ table {
   margin-top: 10px;
 }
 
-th, td {
+th,
+td {
   border: 1px solid #ccc;
   padding: 8px;
   text-align: left;
