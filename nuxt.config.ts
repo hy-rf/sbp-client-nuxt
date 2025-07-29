@@ -11,6 +11,7 @@ export default defineNuxtConfig({
     "@nuxt/eslint",
     "@nuxt/ui",
     "@pinia/nuxt",
+    "@nuxtjs/i18n",
   ],
 
   runtimeConfig: {
@@ -22,5 +23,14 @@ export default defineNuxtConfig({
     routeRules: {
       "/api/**": { proxy: `${process.env.NUXT_PUBLIC_API_BASE_URL}/**` },
     },
+  },
+
+  i18n: {
+    locales: [
+      { code: "en", name: "en-US", file: "en-US.json" },
+      { code: "jp", name: "jp-JP", file: "jp-JP.json" },
+      { code: "zh", name: "zh-CN", file: "zh-CN.json" },
+    ],
+    defaultLocale: "en",
   },
 });
