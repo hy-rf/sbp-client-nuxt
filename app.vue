@@ -15,6 +15,7 @@ onMounted(() => {
         <li><NuxtLink to="/">Home</NuxtLink></li>
         <li><NuxtLink to="/login">Login</NuxtLink></li>
         <li><NuxtLink to="/users">Users</NuxtLink></li>
+        <li v-if="userStore.loaded"><NuxtLink to="/me">Me</NuxtLink></li>
         <li>
           <div>
             <button v-for="locale in locales" @click="setLocale(locale.code)">

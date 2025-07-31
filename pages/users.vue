@@ -1,3 +1,19 @@
+<script setup>
+import { ref, onMounted } from "vue";
+
+const users = ref([]);
+
+onMounted(async () => {
+  try {
+    const res = await fetch("/api/users");
+    if (!res.ok) throw new Error("Failed to fetch users");
+    users.value = await res.json();
+  } catch (err) {
+    console.error(err);
+  }
+});
+</script>
+
 <template>
   <div class="container">
     <h1>User List</h1>
@@ -29,22 +45,6 @@
     </table>
   </div>
 </template>
-
-<script setup>
-import { ref, onMounted } from "vue";
-
-const users = ref([]);
-
-onMounted(async () => {
-  try {
-    const res = await fetch("/api/users");
-    if (!res.ok) throw new Error("Failed to fetch users");
-    users.value = await res.json();
-  } catch (err) {
-    console.error(err);
-  }
-});
-</script>
 
 <style scoped>
 .container {
