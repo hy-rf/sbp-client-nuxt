@@ -17,7 +17,8 @@ async function login() {
       credentials: "include",
     });
     if (res.ok) {
-      alert("Login successful!");
+      error.value = "Login successful!";
+      // TODO: Set user in user store
     } else {
       error.value = "Invalid credentials";
     }
