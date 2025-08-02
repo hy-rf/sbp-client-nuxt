@@ -35,7 +35,8 @@ jobs:
     - name: Copy output to VM with timestamp
       run: |
         TIMESTAMP=$(date +%Y%m%d_%H%M%S)
-        scp -i ~/.ssh/id_rsa.pem -o StrictHostKeyChecking=no -r .output/ ec2-user@${{ secrets.HOST }}:~/JAVASERVER/output_$TIMESTAMP/
+        cp -r .output "output_$TIMESTAMP"
+        scp -i ~/.ssh/id_rsa.pem -o StrictHostKeyChecking=no -r "output_$TIMESTAMP" ec2-user@${{ secrets.HOST }}:~/JAVASERVER/
         echo "TIMESTAMP=$TIMESTAMP" >> $GITHUB_ENV
 
     - name: Restart App on VM
