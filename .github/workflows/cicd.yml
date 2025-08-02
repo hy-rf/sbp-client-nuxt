@@ -41,14 +41,14 @@ jobs:
 
     - name: Restart App on VM
       run: |
-        ssh -i ~/.ssh/id_rsa.pem -o StrictHostKeyChecking=no ec2-user@${{ secrets.HOST }} << EOF
-          mkdir -p output_${{ env.TIMESTAMP }}
-          tar -xzf JAVASERVER/output_${{ env.TIMESTAMP }}.tar.gz -C output_${{ env.TIMESTAMP }}
+        ssh -i ~/.ssh/id_rsa.pem -o StrictHostKeyChecking=no ec2-user@${{ secrets.HOST }}
 
-          echo "Killing process on port 3000..."
-          sudo lsof -t -i:3000 | xargs -r kill -9
+        cd ~/JAVASERVER
+        tar -xzf output_${{ env.TIMESTAMP }}.tar.gz -C ./
+        mv .output output_${{ env.TIMESTAMP }}
 
-          echo "Starting new app..."
-          nohup node output_${{ env.TIMESTAMP }}/server/index.mjs > sbp-client-nuxt.log 2>&1 < /dev/null &
-        EOF
+        echo "Killing process on port 3000..."
+        sudo lsof -t -i:3000 | xargs -r kill -9
 
+        echo "Starting new app..."
+        nohup node output_${{ env.TIMESTAMP }}/server/index.mjs > sbp-client-nuxt.log 2>&1 < /dev/null &
