@@ -35,13 +35,16 @@ jobs:
     - name: Copy output to VM with timestamp
       run: |
         TIMESTAMP=$(date +%Y%m%d_%H%M%S)
-        cp -r .output "output_$TIMESTAMP"
-        scp -i ~/.ssh/id_rsa.pem -o StrictHostKeyChecking=no -r "output_$TIMESTAMP" ec2-user@${{ secrets.HOST }}:~/JAVASERVER/
+        tar -czf "output_$TIMESTAMP.tar.gz" .output
+        scp -i ~/.ssh/id_rsa.pem -o StrictHostKeyChecking=no "output_$TIMESTAMP.tar.gz" ec2-user@${{ secrets.HOST }}:~/JAVASERVER/
         echo "TIMESTAMP=$TIMESTAMP" >> $GITHUB_ENV
 
     - name: Restart App on VM
       run: |
         ssh -i ~/.ssh/id_rsa.pem -o StrictHostKeyChecking=no ec2-user@${{ secrets.HOST }} << EOF
+          mkdir -p output_${{ env.TIMESTAMP }}
+          tar -xzf JAVASERVER/output_${{ env.TIMESTAMP }}.tar.gz -C output_${{ env.TIMESTAMP }}
+
           echo "Killing process on port 3000..."
           sudo lsof -t -i:3000 | xargs -r kill -9
 
