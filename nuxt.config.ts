@@ -12,6 +12,7 @@ export default defineNuxtConfig({
     "@nuxt/ui",
     "@pinia/nuxt",
     "@nuxtjs/i18n",
+    "nuxt-tiptap-editor",
   ],
 
   runtimeConfig: {
@@ -32,5 +33,9 @@ export default defineNuxtConfig({
       { code: "zh", name: "zh-CN", file: "zh-CN.json" },
     ],
     defaultLocale: "en",
+  },
+
+  tiptap: {
+    prefix: 'Tiptap', //prefix for Tiptap imports, composables not included
   },
 });

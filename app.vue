@@ -15,6 +15,7 @@ onMounted(() => {
         <ul class="nav-links">
           <li><NuxtLink to="/">Home</NuxtLink></li>
           <li><NuxtLink to="/users">Users</NuxtLink></li>
+          <li><NuxtLink to="/new">New</NuxtLink></li>
           <li v-if="!userStore.username"><NuxtLink to="/login">Login</NuxtLink></li>
           <li v-if="userStore.loaded && userStore.username"><NuxtLink to="/me">Me</NuxtLink></li>
         </ul>
