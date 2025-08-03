@@ -12,7 +12,6 @@ onMounted(() => {
   <header class="main-header">
     <nav class="navbar">
       <div class="nav-left">
-        <NuxtLink class="logo" to="/">SBP Client</NuxtLink>
         <ul class="nav-links">
           <li><NuxtLink to="/">Home</NuxtLink></li>
           <li><NuxtLink to="/users">Users</NuxtLink></li>
@@ -162,5 +161,13 @@ onMounted(() => {
   .nav-links {
     gap: 0.7rem;
   }
+}
+</style>
+
+<style>
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 </style>
