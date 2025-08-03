@@ -46,10 +46,13 @@ jobs:
           cd ~/JAVASERVER
           tar -xzf output_${{ env.TIMESTAMP }}.tar.gz -C ./
           mv .output output_${{ env.TIMESTAMP }}
-  
+
           echo "Killing process on port 3000..."
           sudo lsof -t -i:3000 | xargs -r kill -9
-  
+
           echo "Starting new app..."
           nohup node output_${{ env.TIMESTAMP }}/server/index.mjs > sbp-client-nuxt.log 2>&1 < /dev/null &
+          
+          rm output_${{ env.TIMESTAMP }}.tar.gz
+          
         EOF
