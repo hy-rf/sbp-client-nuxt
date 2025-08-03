@@ -16,21 +16,29 @@ onMounted(() => {
           <li><NuxtLink to="/">Home</NuxtLink></li>
           <li><NuxtLink to="/users">Users</NuxtLink></li>
           <li><NuxtLink to="/new">New</NuxtLink></li>
-          <li v-if="!userStore.username"><NuxtLink to="/login">Login</NuxtLink></li>
-          <li v-if="userStore.loaded && userStore.username"><NuxtLink to="/me">Me</NuxtLink></li>
+          <li v-if="!userStore.username">
+            <NuxtLink to="/login">Login</NuxtLink>
+          </li>
+          <li v-if="userStore.loaded && userStore.username">
+            <NuxtLink to="/me">Me</NuxtLink>
+          </li>
         </ul>
       </div>
       <div class="nav-right">
-        <div class="locale-switcher">
-          <button
-            v-for="locale in locales"
-            :key="locale.code"
-            :class="{ active: $i18n.locale === locale.code }"
-            @click="setLocale(locale.code)"
-          >
-            {{ locale.name }}
-          </button>
+        <div class="locale-dropdown">
+          <button class="locale-button">🌐</button>
+          <div class="locale-menu">
+            <button
+              v-for="locale in locales"
+              :key="locale.code"
+              :class="{ active: $i18n.locale === locale.code }"
+              @click="setLocale(locale.code)"
+            >
+              {{ locale.name }}
+            </button>
+          </div>
         </div>
+
         <span class="user-info" v-if="userStore.loaded">
           <template v-if="userStore.username">
             <span>👤 {{ userStore.username }}</span>
@@ -53,9 +61,8 @@ onMounted(() => {
   position: sticky;
   top: 0;
   z-index: 100;
-  background: #232946;
-  color: #fff;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+  background: #b0bdff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
 }
 
 .navbar {
@@ -91,16 +98,17 @@ onMounted(() => {
   display: flex;
 }
 .nav-links a {
-  color: #fff;
   text-decoration: none;
   padding: 0.3rem 0.7rem;
   border-radius: 4px;
-  transition: linear 0.2s, color 0.2s;
+  transition:
+    linear 0.2s,
+    color 0.2s;
 }
 .nav-links a:hover,
 .nav-links .router-link-exact-active {
-  background: #eebbc3;
-  color: #232946;
+  color: #eebbc3;
+  background: #232946;
 }
 
 .nav-right {
@@ -109,11 +117,11 @@ onMounted(() => {
   gap: 1.5rem;
 }
 
-.locale-switcher {
-  display: flex;
-  gap: 0.3rem;
+.locale-dropdown {
+  position: relative;
 }
-.locale-switcher button {
+
+.locale-button {
   background: transparent;
   border: 1px solid #eebbc3;
   color: #eebbc3;
@@ -121,12 +129,45 @@ onMounted(() => {
   border-radius: 4px;
   cursor: pointer;
   font-size: 0.95rem;
-  transition: linear 0.2s, color 0.2s;
+  transition:
+    linear 0.2s,
+    color 0.2s;
 }
-.locale-switcher button.active,
-.locale-switcher button:hover {
-  background: #eebbc3;
-  color: #232946;
+
+.locale-menu {
+  position: absolute;
+  /* top: 110%; */
+  right: 0;
+  display: none;
+  flex-direction: column;
+  background: #232946;
+  border: 1px solid #eebbc3;
+  border-radius: 4px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+}
+
+.locale-menu button {
+  background: transparent;
+  border: none;
+  padding: 0.5rem 1rem;
+  text-align: left;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition:
+    linear 0.2s,
+    color 0.2s;
+}
+
+.locale-menu button:hover,
+.locale-menu button.active {
+  color: #eebbc3;
+  background: #232946;
+}
+
+/* Show menu on hover */
+.locale-dropdown:hover .locale-menu {
+  display: flex;
 }
 
 .user-info {
@@ -147,7 +188,7 @@ onMounted(() => {
   background: #f4f6fb;
   min-height: 80vh;
   border-radius: 12px;
-  box-shadow: 0 2px 16px rgba(35,41,70,0.07);
+  box-shadow: 0 2px 16px rgba(35, 41, 70, 0.07);
 }
 
 @media (max-width: 700px) {
@@ -166,7 +207,9 @@ onMounted(() => {
 </style>
 
 <style>
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
