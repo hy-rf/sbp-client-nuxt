@@ -4,13 +4,51 @@ const editor = useEditor({
   extensions: [TiptapStarterKit],
 });
 
+const title = ref(""); // Post title input
+
 onBeforeUnmount(() => {
   unref(editor).destroy();
 });
+
+const submitPost = async () => {
+  if (!title.value || !editor.value) {
+    alert("Title or content is missing!");
+    return;
+  }
+
+  try {
+    const response = await fetch("/api/post", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        // Include auth headers if needed (e.g., Bearer token)
+      },
+      body: JSON.stringify({
+        title: title.value,
+        content: editor.value.getHTML(),
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to post");
+    }
+
+    const result = await response.text();
+    alert(result); // or use router.push('/posts') if needed
+  } catch (error) {
+    console.error(error);
+    alert("Error creating post");
+  }
+};
 </script>
 
 <template>
   <div>
+  <input
+      v-model="title"
+      placeholder="Enter post title"
+      style="margin-bottom: 1rem; padding: 0.5rem; width: 100%;"
+    />
     <div v-if="editor">
       <button
         @click="editor.chain().focus().toggleBold().run()"
@@ -132,6 +170,9 @@ onBeforeUnmount(() => {
       </button>
     </div>
     <TiptapEditorContent :editor="editor" />
+    <button @click="submitPost" style="margin-top: 1rem; background-color: #4caf50; color: white;">
+      Submit Post
+    </button>
   </div>
 </template>
 

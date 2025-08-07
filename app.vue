@@ -14,6 +14,12 @@ onMounted(() => {
       <div class="nav-left">
         <ul class="nav-links">
           <li><NuxtLink to="/">Home</NuxtLink></li>
+          <li
+            
+          >
+            <NuxtLink :class="{ 'router-link-exact-active': $route.path.startsWith('/posts') }" to="/posts">Posts</NuxtLink>
+          </li>
+
           <li><NuxtLink to="/users">Users</NuxtLink></li>
           <li><NuxtLink to="/new">New</NuxtLink></li>
           <li v-if="!userStore.username">
