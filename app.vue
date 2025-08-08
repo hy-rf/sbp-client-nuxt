@@ -17,7 +17,7 @@ onMounted(() => {
           <li
             
           >
-            <NuxtLink :class="{ 'router-link-exact-active': $route.path.startsWith('/posts') }" to="/posts">Posts</NuxtLink>
+            <NuxtLink :class="{ 'router-link-exact-active': $route.path.startsWith('/post') }" to="/post">Posts</NuxtLink>
           </li>
 
           <li><NuxtLink to="/users">Users</NuxtLink></li>
