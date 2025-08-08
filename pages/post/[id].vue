@@ -3,7 +3,8 @@ import type Post from "~/types/Post";
 
 const route = useRoute();
 const postId = route.params.id as string;
-const { data: post, error } = await useFetch<Post>(`/api/post/${postId}`);
+const url = useRequestURL();
+const { data: post, error } = await useFetch<Post>(`${url.origin}/api/post/${postId}`);
 </script>
 
 <template>
