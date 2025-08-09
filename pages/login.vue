@@ -20,9 +20,11 @@ async function login() {
       credentials: "include",
     });
     if (res.ok) {
+      const data = await res.text();
+      console.log("Login response:", data);
       userStore.fetchUser();
-      router.push("/");
       error.value = "Login successful!";
+      router.push("/");
       // TODO: Set user in user store
     } else {
       error.value = "Invalid credentials";
