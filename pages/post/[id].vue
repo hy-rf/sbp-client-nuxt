@@ -5,7 +5,36 @@ const route = useRoute();
 const postId = route.params.id as string;
 const { data: post, error } = await useFetch<Post>(`/api/post/${postId}`);
 
+const userStore = useUserStore();
+
 const { t } = useI18n();
+
+const replyContent = ref("");
+const replyMessage = ref("");
+
+const submitReply = async () => {
+  replyMessage.value = "";
+  try {
+    const res = await fetch("/api/reply", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({
+        postId: postId,
+        content: replyContent.value,
+        // parentReplyId can be added here if replying to another reply
+      }),
+    });
+    if (res.ok) {
+      replyMessage.value = "Reply submitted!";
+      replyContent.value = "";
+      // Optionally, reload replies here
+    } else {
+      replyMessage.value = await res.text();
+    }
+  } catch (e) {
+    replyMessage.value = "Network error";
+  }
+};
 </script>
 
 <template>
@@ -15,20 +44,24 @@ const { t } = useI18n();
 
       <div class="content" v-html="post.content"></div>
 
-      <p class="meta">Created at: {{ new Date(post.createdAt).toLocaleString() }}</p>
+      <p class="meta">
+        Created at: {{ new Date(post.createdAt).toLocaleString() }}
+      </p>
 
       <hr />
 
       <div class="author-section">
-        <h3 class="subtitle">{{ t('post.author_info') }}</h3>
+        <h3 class="subtitle">{{ t("post.author_info") }}</h3>
         <ul class="author-list">
-          <li><strong>{{ t('post.username') }}</strong> {{ post.author.username }}</li>
-          <!-- <li>
+          <li>
+            <strong>{{ t("post.username") }}</strong> {{ post.author.username }}
+          </li>
+          <li>
             <strong>Verified:</strong>
             <span :class="post.author.emailVerified ? 'verified' : 'unverified'">
               {{ post.author.emailVerified ? "Yes" : "No" }}
             </span>
-          </li> -->
+          </li>
         </ul>
       </div>
     </div>
@@ -39,6 +72,21 @@ const { t } = useI18n();
 
     <div v-else class="loading">
       <p>Loading...</p>
+    </div>
+
+    <div v-if="userStore.loaded">
+      <form class="reply-form" @submit.prevent="submitReply">
+        <label for="reply-content" class="reply-label">Add a reply:</label>
+        <textarea
+          id="reply-content"
+          v-model="replyContent"
+          class="reply-textarea"
+          rows="3"
+          required
+        ></textarea>
+        <button type="submit" class="reply-btn">Reply</button>
+        <div v-if="replyMessage" class="reply-message">{{ replyMessage }}</div>
+      </form>
     </div>
   </div>
 </template>
@@ -70,7 +118,9 @@ const { t } = useI18n();
   margin-bottom: 20px;
 }
 
-.content h2, .content h3, .content p {
+.content h2,
+.content h3,
+.content p {
   margin-bottom: 16px;
 }
 
@@ -130,5 +180,54 @@ hr {
   font-size: 1.1rem;
   color: #888;
   padding: 40px 0;
+}
+
+.reply-form {
+  margin-top: 32px;
+  background: #f7f9fa;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.05);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.reply-label {
+  font-weight: 500;
+  margin-bottom: 6px;
+  color: #444;
+}
+
+.reply-textarea {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #d0d5dd;
+  font-size: 1rem;
+  background: #fff;
+  resize: vertical;
+}
+
+.reply-btn {
+  align-self: flex-end;
+  background: linear-gradient(90deg, #6366f1 0%, #60a5fa 100%);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 24px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.reply-btn:hover {
+  background: linear-gradient(90deg, #60a5fa 0%, #6366f1 100%);
+}
+
+.reply-message {
+  margin-top: 8px;
+  color: #6366f1;
+  font-size: 0.9rem;
 }
 </style>
