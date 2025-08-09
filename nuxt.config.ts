@@ -18,14 +18,12 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     public: {
-      API_BASE_URL: process.env.NUXT_PUBLIC_API_BASE_URL,
       BASE_URL: process.env.NUXT_PUBLIC_BASE_URL
     },
-    backendBase: 'http://localhost:8080' 
   },
   nitro: {
     routeRules: {
-      "/api/**": { proxy: `${process.env.NUXT_PUBLIC_API_BASE_URL}/**` },
+      "/api/**": { proxy: `${process.env.NUXT_PUBLIC_BASE_URL}/**` },
     },
   },
 

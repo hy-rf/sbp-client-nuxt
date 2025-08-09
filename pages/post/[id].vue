@@ -3,9 +3,7 @@ import type Post from "~/types/Post";
 
 const route = useRoute();
 const postId = route.params.id as string;
-// TODO: fix environment problem
-const baseApiUrl = process.server ? "http://localhost:8080" : "/api";   
-const { data: post, error } = await useFetch<Post>(`${baseApiUrl}/post/${postId}`);
+const { data: post, error } = await useFetch<Post>(`/api/post/${postId}`);
 
 const { t } = useI18n();
 </script>

@@ -26,7 +26,7 @@ const { data: posts, pending: loading, refresh } = await useAsyncData(
   'postsSearch',
   // If use /api/posts/search it will call localhost:8080/posts/search (by nitro proxy)
   // So use the full URL to avoid that
-  () => $fetch<Array<Post>>(`${config.public.BASE_URL}/api/posts/search`, {
+  () => $fetch<Array<Post>>(`${config.public.BASE_URL}/posts/search`, {
     query: queryParams.value,
   }),
   {
