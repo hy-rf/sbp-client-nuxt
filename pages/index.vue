@@ -5,8 +5,10 @@ const { t } = useI18n();
 const route = useRoute();
 const router = useRouter();
 
-const baseApiUrl = import.meta.server ? "http://localhost:8080" : "/api";
+//const baseApiUrl = import.meta.server ? "http://localhost:8080" : "/api";
 //const baseApiUrl = "/api"
+// because it must be rendered on the server side, we cannot use relative paths like "/api" directly
+const baseApiUrl = "http://localhost:8080"
 // Filters state (initialized from URL)
 const keyword = ref(route.query.keyword ?? "");
 const authorName = ref(route.query.authorName ?? "");
@@ -37,7 +39,7 @@ async function fetchPosts() {
   // Fetch from backend
   const { data } = await useFetch<Array<Post>>(`${baseApiUrl}/posts/search`, {
     query,
-    server: process.server,
+    server: true,
     lazy: false,
   });
 
@@ -45,12 +47,8 @@ async function fetchPosts() {
   loading.value = false;
 }
 
-// Auto-fetch on page load with initial URL params
 await fetchPosts();
 
-// onMounted(()=>{
-//   fetchPosts();
-// })
 </script>
 
 <template>
@@ -82,7 +80,6 @@ await fetchPosts();
       </button>
     </div>
 
-    <!-- Posts -->
     <div v-if="!loading && posts.length === 0" class="empty">
       No posts available.
     </div>
@@ -98,9 +95,11 @@ await fetchPosts();
           {{ post.author.username }}
         </NuxtLink>
         |
-        <span class="date">{{
-          new Date(post.createdAt).toLocaleString()
-        }}</span>
+        <ClientOnly>
+          <span class="date">{{
+            new Date(post.createdAt).toLocaleString()
+          }}</span>
+        </ClientOnly>
       </div>
       <hr />
     </div>
