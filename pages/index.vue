@@ -5,7 +5,6 @@ const { t } = useI18n();
 const route = useRoute();
 const router = useRouter();
 
-// Filters state (initialized from URL query parameters)
 const keyword = ref(route.query.keyword as string || "");
 const authorName = ref(route.query.authorName as string || "");
 const createdAfter = ref(route.query.createdAfter as string || "");
@@ -13,8 +12,6 @@ const createdBefore = ref(route.query.createdBefore as string || "");
 const sortBy = ref(route.query.sortBy as string || "createdAt");
 const order = ref(route.query.order as string || "desc");
 
-// A computed property to neatly gather all filter refs.
-// This will be used by our fetch function.
 const queryParams = computed(() => ({
   keyword: keyword.value || undefined,
   authorName: authorName.value || undefined,
@@ -24,27 +21,20 @@ const queryParams = computed(() => ({
   order: order.value,
 }));
 
-// Use useAsyncData to fetch data.
-// It returns 'data', 'pending', and a 'refresh' function.
-// The initial fetch will happen on the server.
 const { data: posts, pending: loading, refresh } = await useAsyncData(
-  'postsSearch', // A unique key for this data fetch
+  'postsSearch',
+  // If use /api/posts/search it will call localhost:8080/posts/search (by nitro proxy)
+  // So use the full URL to avoid that
   () => $fetch<Array<Post>>('https://udevkit.lol/api/posts/search', {
-    // Pass the current value of our computed query params
     query: queryParams.value,
   }),
   {
-    // Use a default value to prevent errors when `posts` is null initially
     default: () => [],
   }
 );
 
-// This function will be called when the search button is clicked.
 async function performSearch() {
-  // First, update the URL in the browser. This is good practice.
   await router.push({ query: queryParams.value });
-
-  // Then, call refresh() to re-fetch the data with the new query parameters.
   await refresh();
 }
 </script>
@@ -53,7 +43,6 @@ async function performSearch() {
   <div class="container">
     <h1 class="page-title">{{ t("posts.search") }}</h1>
 
-    <!-- Filters -->
     <div class="filters">
       <input
         v-model="keyword"

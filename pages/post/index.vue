@@ -1,4 +1,5 @@
 <script setup lang="ts">
+// WILL be removed
 import type Post from "~/types/Post";
 
 const { t }= useI18n();
