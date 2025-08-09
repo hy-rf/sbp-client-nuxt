@@ -1,10 +1,16 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
 import type Post from "~/types/Post";
 
 const { t }= useI18n();
 
-const { data: posts, error } = await useFetch<Array<Post>>(`/api/posts`);
+
+
+const config = useRuntimeConfig();
+const apiUrl = process.server
+  ? config.backendBase + '/posts'  // direct to Java backend from server side
+  : config.public.API_BASE_URL + '/posts'; 
+
+const { data: posts, error } = await useFetch<Array<Post>>(apiUrl);
 </script>
 
 <template>

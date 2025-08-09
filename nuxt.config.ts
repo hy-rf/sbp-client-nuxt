@@ -2,6 +2,7 @@
 export default defineNuxtConfig({
   compatibilityDate: "2025-05-15",
   devtools: { enabled: true },
+  ssr: true,
 
   modules: [
     "@nuxt/test-utils",
@@ -19,6 +20,7 @@ export default defineNuxtConfig({
     public: {
       API_BASE_URL: process.env.NUXT_PUBLIC_API_BASE_URL,
     },
+    backendBase: 'http://localhost:8080' 
   },
   nitro: {
     routeRules: {
