@@ -4,6 +4,7 @@ import type Post from "~/types/Post";
 const { t } = useI18n();
 const route = useRoute();
 const router = useRouter();
+const config = useRuntimeConfig();
 
 const keyword = ref(route.query.keyword as string || "");
 const authorName = ref(route.query.authorName as string || "");
@@ -25,7 +26,7 @@ const { data: posts, pending: loading, refresh } = await useAsyncData(
   'postsSearch',
   // If use /api/posts/search it will call localhost:8080/posts/search (by nitro proxy)
   // So use the full URL to avoid that
-  () => $fetch<Array<Post>>('https://udevkit.lol/api/posts/search', {
+  () => $fetch<Array<Post>>(`${config.public.BASE_URL}/api/posts/search`, {
     query: queryParams.value,
   }),
   {
@@ -36,7 +37,25 @@ const { data: posts, pending: loading, refresh } = await useAsyncData(
 async function performSearch() {
   await router.push({ query: queryParams.value });
   await refresh();
+  console.log("Search performed with params:", queryParams.value);
 }
+
+watch(
+  () => route.query,
+  (newQuery) => {
+    // Update refs from route.query
+    keyword.value = newQuery.keyword as string || "";
+    authorName.value = newQuery.authorName as string || "";
+    createdAfter.value = newQuery.createdAfter as string || "";
+    createdBefore.value = newQuery.createdBefore as string || "";
+    sortBy.value = newQuery.sortBy as string || "createdAt";
+    order.value = newQuery.order as string || "desc";
+
+    // Refresh data based on new query params
+    refresh();
+  },
+  { immediate: true }
+);
 </script>
 
 <template>
@@ -62,8 +81,8 @@ async function performSearch() {
         <option value="asc">Ascending</option>
       </select>
 
-      <button @click="performSearch" :disabled="loading">
-        {{ loading ? "Loading..." : "Search" }}
+      <button @click="performSearch" :disabled="false">
+        {{ "Search" }}
       </button>
     </div>
 
