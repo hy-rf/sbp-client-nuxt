@@ -5,8 +5,8 @@ const { t } = useI18n();
 const route = useRoute();
 const router = useRouter();
 
-const baseUrl = "/api/posts";
-
+//const baseApiUrl = process.server ? "http://localhost:8080" : "/api";
+const baseApiUrl = "/api"
 // Filters state (initialized from URL)
 const keyword = ref(route.query.keyword ?? "");
 const authorName = ref(route.query.authorName ?? "");
@@ -28,28 +28,29 @@ async function fetchPosts() {
     createdAfter: createdAfter.value || undefined,
     createdBefore: createdBefore.value || undefined,
     sortBy: sortBy.value,
-    order: order.value
+    order: order.value,
   };
-
-  console.log("Fetching posts with query:", query);
 
   // Update URL params
   router.replace({ query });
 
   // Fetch from backend
-  const { data } = await useFetch<Array<Post>>(baseUrl, {
+  const { data } = await useFetch<Array<Post>>(`${baseApiUrl}/posts/search`, {
     query,
+    server: process.server,
+    lazy: false,
   });
 
-  console.log("Fetched posts:", data.value);
-  
   posts.value = data.value || [];
-  console.log("Posts:", posts.value);
   loading.value = false;
 }
 
 // Auto-fetch on page load with initial URL params
 await fetchPosts();
+
+// onMounted(()=>{
+//   fetchPosts();
+// })
 </script>
 
 <template>
@@ -58,7 +59,11 @@ await fetchPosts();
 
     <!-- Filters -->
     <div class="filters">
-      <input v-model="keyword" type="text" placeholder="Search title/content..." />
+      <input
+        v-model="keyword"
+        type="text"
+        placeholder="Search title/content..."
+      />
       <input v-model="authorName" type="text" placeholder="Author name..." />
       <input v-model="createdAfter" type="datetime-local" />
       <input v-model="createdBefore" type="datetime-local" />
@@ -93,7 +98,9 @@ await fetchPosts();
           {{ post.author.username }}
         </NuxtLink>
         |
-        <span class="date">{{ new Date(post.createdAt).toLocaleString() }}</span>
+        <span class="date">{{
+          new Date(post.createdAt).toLocaleString()
+        }}</span>
       </div>
       <hr />
     </div>
