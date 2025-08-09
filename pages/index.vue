@@ -47,6 +47,30 @@ async function fetchPosts() {
   loading.value = false;
 }
 
+async function fetchPostsClient() {
+  loading.value = true;
+
+  const query = {
+    keyword: keyword.value || undefined,
+    authorName: authorName.value || undefined,
+    createdAfter: createdAfter.value || undefined,
+    createdBefore: createdBefore.value || undefined,
+    sortBy: sortBy.value,
+    order: order.value,
+  };
+
+  // Update URL params
+  router.replace({ query });
+
+  // Fetch from backend
+  const { data } = await useFetch<Array<Post>>("/api/posts/search", {
+    query,
+  });
+
+  posts.value = data.value || [];
+  loading.value = false;
+}
+
 await fetchPosts();
 
 </script>
@@ -75,7 +99,7 @@ await fetchPosts();
         <option value="asc">Ascending</option>
       </select>
 
-      <button @click="fetchPosts" :disabled="loading">
+      <button @click="fetchPostsClient" :disabled="loading">
         {{ loading ? "Loading..." : "Search" }}
       </button>
     </div>
