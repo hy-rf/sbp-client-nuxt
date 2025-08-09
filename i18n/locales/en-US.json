@@ -1,3 +1,10 @@
 {
-  "welcome": "Welcome"
+  "welcome": "Welcome",
+  "nav": {
+    "home": "Home",
+    "posts": "Posts",
+    "users": "Users",
+    "new": "New",
+    "login": "Login","me": "Me"
+  }
 }

@@ -3,6 +3,8 @@ import { useUserStore } from "./stores/user";
 const { locales, setLocale } = useI18n();
 const userStore = useUserStore();
 
+const { t } = useI18n();
+
 onMounted(() => {
   userStore.fetchUser();
 });
@@ -13,20 +15,20 @@ onMounted(() => {
     <nav class="navbar">
       <div class="nav-left">
         <ul class="nav-links">
-          <li><NuxtLink to="/">Home</NuxtLink></li>
+          <li><NuxtLink to="/">{{ t('nav.home') }}</NuxtLink></li>
           <li
             
           >
-            <NuxtLink :class="{ 'router-link-exact-active': $route.path.startsWith('/post') }" to="/post">Posts</NuxtLink>
+            <NuxtLink :class="{ 'router-link-exact-active': $route.path.startsWith('/post') }" to="/post">{{ t('nav.posts') }}</NuxtLink>
           </li>
 
-          <li><NuxtLink to="/users">Users</NuxtLink></li>
-          <li><NuxtLink to="/new">New</NuxtLink></li>
+          <li><NuxtLink to="/users">{{ t('nav.users') }}</NuxtLink></li>
+          <li><NuxtLink to="/new">{{ t('nav.new') }}</NuxtLink></li>
           <li v-if="!userStore.username">
-            <NuxtLink to="/login">Login</NuxtLink>
+            <NuxtLink to="/login">{{ t('nav.login') }}</NuxtLink>
           </li>
           <li v-if="userStore.loaded && userStore.username">
-            <NuxtLink to="/me">Me</NuxtLink>
+            <NuxtLink to="/me">{{ t('nav.me') }}</NuxtLink>
           </li>
         </ul>
       </div>
@@ -107,9 +109,6 @@ onMounted(() => {
   text-decoration: none;
   padding: 0.3rem 0.7rem;
   border-radius: 4px;
-  transition:
-    linear 0.2s,
-    color 0.2s;
 }
 .nav-links a:hover,
 .nav-links .router-link-exact-active {
@@ -135,9 +134,6 @@ onMounted(() => {
   border-radius: 4px;
   cursor: pointer;
   font-size: 0.95rem;
-  transition:
-    linear 0.2s,
-    color 0.2s;
 }
 
 .locale-menu {
@@ -160,9 +156,6 @@ onMounted(() => {
   text-align: left;
   font-size: 0.95rem;
   cursor: pointer;
-  transition:
-    linear 0.2s,
-    color 0.2s;
 }
 
 .locale-menu button:hover,

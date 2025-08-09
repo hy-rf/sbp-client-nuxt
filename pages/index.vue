@@ -1,13 +1,12 @@
 <script setup lang="ts">
-
+const { t } = useI18n();
 </script>
 
 <template>
   <div>
-    Welcome
+    {{ t('welcome') }}
   </div>
 </template>
 
-<style lang="css" scoped>
-
+<style scoped>
 </style>
