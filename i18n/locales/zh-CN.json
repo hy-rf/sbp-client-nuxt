@@ -17,7 +17,8 @@
     "view": "查看文章",
     "list": "文章列表",
     "author": "作者 ",
-    "created_at": "创建于"
+    "created_at": "创建于",
+    "search": "搜索文章"
   },
   "post": {
     "author": "作者 ",

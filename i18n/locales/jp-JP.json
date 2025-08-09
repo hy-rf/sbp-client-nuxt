@@ -17,7 +17,8 @@
     "view": "投稿を見る",
     "list": "投稿一覧",
     "author": "作成者 ",
-    "created_at": "作成日時"
+    "created_at": "作成日時",
+    "search": "投稿を検索"
   },
   "post": {
     "author": "作成者 ",

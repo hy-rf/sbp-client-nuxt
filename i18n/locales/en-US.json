@@ -17,7 +17,8 @@
     "view": "View Post",
     "list": "List of Posts",
     "author": "By ",
-    "created_at": "Created at"
+    "created_at": "Created at",
+    "search": "Search Posts"
   },
   "post": {
     "author": "By ",
