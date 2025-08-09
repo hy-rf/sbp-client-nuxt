@@ -20,12 +20,11 @@ export const useUserStore = defineStore("user", {
       this.roles = data.roles;
       this.loaded = true;
     },
-    logout() {
+    async logout() {
+      await fetch("/api/leave", { method: "get", credentials: "include" });
       this.username = "";
       this.roles = [];
       this.loaded = false;
-      document.cookie = "token=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax;";
-  document.cookie = "refresh=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax;";
     },
   },
 });
