@@ -29,7 +29,7 @@ const queryParams = computed(() => ({
 // The initial fetch will happen on the server.
 const { data: posts, pending: loading, refresh } = await useAsyncData(
   'postsSearch', // A unique key for this data fetch
-  () => $fetch<Array<Post>>('/api/posts/search', {
+  () => $fetch<Array<Post>>('https://udevkit.lol/api/posts/search', {
     // Pass the current value of our computed query params
     query: queryParams.value,
   }),
