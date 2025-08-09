@@ -5,8 +5,8 @@ const { t } = useI18n();
 const route = useRoute();
 const router = useRouter();
 
-//const baseApiUrl = process.server ? "http://localhost:8080" : "/api";
-const baseApiUrl = "/api"
+const baseApiUrl = import.meta.server ? "http://localhost:8080" : "/api";
+//const baseApiUrl = "/api"
 // Filters state (initialized from URL)
 const keyword = ref(route.query.keyword ?? "");
 const authorName = ref(route.query.authorName ?? "");
