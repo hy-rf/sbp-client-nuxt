@@ -71,7 +71,13 @@ async function fetchPostsClient() {
   loading.value = false;
 }
 
-await fetchPosts();
+if(import.meta.server) {
+  // Server-side fetch on initial load
+  await fetchPosts();
+} else {
+  // Client-side fetch on navigation
+  fetchPostsClient();
+}
 
 </script>
 
