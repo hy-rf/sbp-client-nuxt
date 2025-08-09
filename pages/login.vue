@@ -4,6 +4,9 @@ const username = ref("");
 const password = ref("");
 const error = ref("");
 
+const userStore = useUserStore();
+const router = useRouter();
+
 async function login() {
   error.value = "";
   try {
@@ -17,6 +20,8 @@ async function login() {
       credentials: "include",
     });
     if (res.ok) {
+      userStore.fetchUser();
+      router.push("/");
       error.value = "Login successful!";
       // TODO: Set user in user store
     } else {

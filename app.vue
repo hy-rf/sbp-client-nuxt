@@ -2,12 +2,24 @@
 import { useUserStore } from "./stores/user";
 const { locales, setLocale } = useI18n();
 const userStore = useUserStore();
+const router = useRouter();
 
 const { t } = useI18n();
 
 onMounted(() => {
   userStore.fetchUser();
 });
+
+watch(
+  () => userStore.loaded,
+  (loaded) => {
+    if (!loaded) {
+      // User logged out or not loaded, redirect or refresh accordingly
+      router.push("/login");
+      // or window.location.reload() if you want full reload
+    }
+  }
+);
 </script>
 
 <template>
@@ -15,20 +27,28 @@ onMounted(() => {
     <nav class="navbar">
       <div class="nav-left">
         <ul class="nav-links">
-          <li><NuxtLink to="/">{{ t('nav.home') }}</NuxtLink></li>
-          <li
-            
-          >
-            <NuxtLink :class="{ 'router-link-exact-active': $route.path.startsWith('/post') }" to="/post">{{ t('nav.posts') }}</NuxtLink>
+          <li>
+            <NuxtLink to="/">{{ t("nav.home") }}</NuxtLink>
+          </li>
+          <li>
+            <NuxtLink
+              :class="{
+                'router-link-exact-active': $route.path.startsWith('/post'),
+              }"
+              to="/post"
+              >{{ t("nav.posts") }}</NuxtLink
+            >
           </li>
 
-          <li><NuxtLink to="/users">{{ t('nav.users') }}</NuxtLink></li>
-          <li><NuxtLink to="/new">{{ t('nav.new') }}</NuxtLink></li>
-          <li v-if="!userStore.username">
-            <NuxtLink to="/login">{{ t('nav.login') }}</NuxtLink>
+          <li v-if="userStore.loaded">
+            <NuxtLink to="/users">{{ t("nav.users") }}</NuxtLink>
           </li>
-          <li v-if="userStore.loaded && userStore.username">
-            <NuxtLink to="/me">{{ t('nav.me') }}</NuxtLink>
+          <li v-if="userStore.loaded">
+            <NuxtLink to="/new">{{ t("nav.new") }}</NuxtLink>
+          </li>
+
+          <li v-if="userStore.loaded">
+            <NuxtLink to="/me">{{ t("nav.me") }}</NuxtLink>
           </li>
         </ul>
       </div>
@@ -47,15 +67,15 @@ onMounted(() => {
           </div>
         </div>
 
-        <span class="user-info" v-if="userStore.loaded">
-          <template v-if="userStore.username">
+        <span class="user-info">
+          <template v-if="userStore.loaded">
             <span>👤 {{ userStore.username }}</span>
+            <button @click="userStore.logout">{{ t("nav.logout") }}</button>
           </template>
           <template v-else>
-            <span>Guest</span>
+            <NuxtLink to="/login">{{ t("nav.login") }}</NuxtLink>
           </template>
         </span>
-        <span v-if="!userStore.loaded" class="loading">Loading...</span>
       </div>
     </nav>
   </header>

@@ -5,6 +5,23 @@
     "posts": "投稿",
     "users": "ユーザー",
     "new": "新規",
-    "login": "ログイン","me": "マイページ"
+    "login": "ログイン",
+    "me": "マイページ",
+    "logout": "ログアウト"
+  },
+  "posts": {
+    "title": "投稿",
+    "create": "投稿を作成",
+    "edit": "投稿を編集",
+    "delete": "投稿を削除",
+    "view": "投稿を見る",
+    "list": "投稿一覧",
+    "author": "作成者 ",
+    "created_at": "作成日時"
+  },
+  "post": {
+    "author": "作成者 ",
+    "author_info": "作成者情報",
+    "username": "ユーザー名: "
   }
 }

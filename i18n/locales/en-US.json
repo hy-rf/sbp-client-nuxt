@@ -5,6 +5,23 @@
     "posts": "Posts",
     "users": "Users",
     "new": "New",
-    "login": "Login","me": "Me"
+    "login": "Login",
+    "me": "Me",
+    "logout": "Logout"
+  },
+  "posts": {
+    "title": "Posts",
+    "create": "Create Post",
+    "edit": "Edit Post",
+    "delete": "Delete Post",
+    "view": "View Post",
+    "list": "List of Posts",
+    "author": "By ",
+    "created_at": "Created at"
+  },
+  "post": {
+    "author": "By ",
+    "author_info": "Author Info",
+    "username": "User name: "
   }
 }

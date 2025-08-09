@@ -5,6 +5,8 @@ const route = useRoute();
 const postId = route.params.id as string;
 const url = useRequestURL();
 const { data: post, error } = await useFetch<Post>(`${url.origin}/api/post/${postId}`);
+
+const { t } = useI18n();
 </script>
 
 <template>
@@ -19,16 +21,15 @@ const { data: post, error } = await useFetch<Post>(`${url.origin}/api/post/${pos
       <hr />
 
       <div class="author-section">
-        <h3 class="subtitle">Author Info</h3>
+        <h3 class="subtitle">{{ t('post.author_info') }}</h3>
         <ul class="author-list">
-          <li><strong>Name:</strong> {{ post.author.fullName }}</li>
-          <li><strong>Email:</strong> {{ post.author.email }}</li>
-          <li>
+          <li><strong>{{ t('post.username') }}</strong> {{ post.author.username }}</li>
+          <!-- <li>
             <strong>Verified:</strong>
             <span :class="post.author.emailVerified ? 'verified' : 'unverified'">
               {{ post.author.emailVerified ? "Yes" : "No" }}
             </span>
-          </li>
+          </li> -->
         </ul>
       </div>
     </div>

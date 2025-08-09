@@ -2,6 +2,7 @@
 import { onMounted, ref } from 'vue';
 import type Post from "~/types/Post";
 
+const { t }= useI18n();
 
 const { data: posts, error } = await useFetch<Array<Post>>(`/api/posts`);
 </script>
@@ -25,7 +26,7 @@ const { data: posts, error } = await useFetch<Array<Post>>(`/api/posts`);
       </NuxtLink>
 
       <div class="meta">
-        by
+        {{ t('posts.author') }}
         <NuxtLink
           :to="`/user/${post.author.id}`"
           class="author-link"
