@@ -5,80 +5,48 @@ const { t } = useI18n();
 const route = useRoute();
 const router = useRouter();
 
-//const baseApiUrl = import.meta.server ? "http://localhost:8080" : "/api";
-//const baseApiUrl = "/api"
-// because it must be rendered on the server side, we cannot use relative paths like "/api" directly
-const baseApiUrl = "http://localhost:8080"
-// Filters state (initialized from URL)
-const keyword = ref(route.query.keyword ?? "");
-const authorName = ref(route.query.authorName ?? "");
-const createdAfter = ref(route.query.createdAfter ?? "");
-const createdBefore = ref(route.query.createdBefore ?? "");
-const sortBy = ref(route.query.sortBy ?? "createdAt");
-const order = ref(route.query.order ?? "desc");
+// Filters state (initialized from URL query parameters)
+const keyword = ref(route.query.keyword as string || "");
+const authorName = ref(route.query.authorName as string || "");
+const createdAfter = ref(route.query.createdAfter as string || "");
+const createdBefore = ref(route.query.createdBefore as string || "");
+const sortBy = ref(route.query.sortBy as string || "createdAt");
+const order = ref(route.query.order as string || "desc");
 
-// Data & fetch method
-const posts = ref<Array<Post>>([]);
-const loading = ref(false);
+// A computed property to neatly gather all filter refs.
+// This will be used by our fetch function.
+const queryParams = computed(() => ({
+  keyword: keyword.value || undefined,
+  authorName: authorName.value || undefined,
+  createdAfter: createdAfter.value || undefined,
+  createdBefore: createdBefore.value || undefined,
+  sortBy: sortBy.value,
+  order: order.value,
+}));
 
-async function fetchPosts() {
-  loading.value = true;
+// Use useAsyncData to fetch data.
+// It returns 'data', 'pending', and a 'refresh' function.
+// The initial fetch will happen on the server.
+const { data: posts, pending: loading, refresh } = await useAsyncData(
+  'postsSearch', // A unique key for this data fetch
+  () => $fetch<Array<Post>>('/api/posts/search', {
+    // Pass the current value of our computed query params
+    query: queryParams.value,
+  }),
+  {
+    // Use a default value to prevent errors when `posts` is null initially
+    default: () => [],
+  }
+);
 
-  const query = {
-    keyword: keyword.value || undefined,
-    authorName: authorName.value || undefined,
-    createdAfter: createdAfter.value || undefined,
-    createdBefore: createdBefore.value || undefined,
-    sortBy: sortBy.value,
-    order: order.value,
-  };
+// This function will be called when the search button is clicked.
+async function performSearch() {
+  // First, update the URL in the browser. This is good practice.
+  await router.push({ query: queryParams.value });
 
-  // Update URL params
-  router.replace({ query });
-
-  // Fetch from backend
-  const { data } = await useFetch<Array<Post>>(`${baseApiUrl}/posts/search`, {
-    query,
-    server: true,
-    lazy: false,
-  });
-
-  posts.value = data.value || [];
-  loading.value = false;
+  // Then, call refresh() to re-fetch the data with the new query parameters.
+  await refresh();
 }
-
-async function fetchPostsClient() {
-  loading.value = true;
-
-  const query = {
-    keyword: keyword.value || undefined,
-    authorName: authorName.value || undefined,
-    createdAfter: createdAfter.value || undefined,
-    createdBefore: createdBefore.value || undefined,
-    sortBy: sortBy.value,
-    order: order.value,
-  };
-
-  // Update URL params
-  router.replace({ query });
-
-  // Fetch from backend
-  const { data } = await useFetch<Array<Post>>("/api/posts/search", {
-    query,
-  });
-
-  posts.value = data.value || [];
-  loading.value = false;
-}
-
-if(import.meta.server) {
-  // Server-side fetch on initial load
-  await fetchPosts();
-} else {
-  // Client-side fetch on navigation
-  fetchPostsClient();
-}
-
 </script>
 
 <template>
@@ -105,7 +73,7 @@ if(import.meta.server) {
         <option value="asc">Ascending</option>
       </select>
 
-      <button @click="fetchPostsClient" :disabled="loading">
+      <button @click="performSearch" :disabled="loading">
         {{ loading ? "Loading..." : "Search" }}
       </button>
     </div>
