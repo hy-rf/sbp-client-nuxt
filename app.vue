@@ -74,6 +74,7 @@ watch(
           </template>
           <template v-else>
             <NuxtLink to="/login">{{ t("nav.login") }}</NuxtLink>
+            <NuxtLink to="/register">{{ t("nav.register") }}</NuxtLink>
           </template>
         </span>
       </div>

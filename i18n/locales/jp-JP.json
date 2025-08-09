@@ -7,7 +7,8 @@
     "new": "新規",
     "login": "ログイン",
     "me": "マイページ",
-    "logout": "ログアウト"
+    "logout": "ログアウト",
+    "register": "登録"
   },
   "posts": {
     "title": "投稿",
