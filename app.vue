@@ -30,15 +30,15 @@ watch(
           <li>
             <NuxtLink to="/">{{ t("nav.home") }}</NuxtLink>
           </li>
-          <!-- <li>
+          <li>
             <NuxtLink
               :class="{
                 'router-link-exact-active': $route.path.startsWith('/post'),
               }"
               to="/post"
-              >{{ t("nav.posts") }}</NuxtLink
+              >{{ "Post search/filter/sort with pinia" }}</NuxtLink
             >
-          </li> -->
+          </li>
 
           <li v-if="userStore.loaded">
             <NuxtLink to="/users">{{ t("nav.users") }}</NuxtLink>

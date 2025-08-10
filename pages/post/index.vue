@@ -1,117 +1,131 @@
 <script setup lang="ts">
-// WILL be removed
+import { usePostSearchStore } from "~/stores/post_search";
+import { fetchPosts } from "~/services/posts_service";
 import type Post from "~/types/Post";
 
-const { t }= useI18n();
+const { t } = useI18n();
+const route = useRoute();
+const router = useRouter();
+const searchStore = usePostSearchStore();
 
+// Initialize store from URL on load
+searchStore.setFromRoute(route.query);
 
+// Form state (local only, not used by fetch until Search clicked)
+const form = reactive({
+  keyword: searchStore.keyword,
+  authorName: searchStore.authorName,
+  createdAfter: searchStore.createdAfter,
+  createdBefore: searchStore.createdBefore,
+  sortBy: searchStore.sortBy,
+  order: searchStore.order
+});
 
-const config = useRuntimeConfig();
-const apiUrl = process.server
-  ? config.backendBase + '/posts'  // direct to Java backend from server side
-  : config.public.API_BASE_URL + '/posts'; 
+// API fetching
+const { data: posts, pending, refresh, error } = await useAsyncData(
+  () => `postsSearch-${JSON.stringify(route.query)}`,
+  () => fetchPosts(route.query),
+  { default: () => [] as Post[] }
+);
 
-const { data: posts, error } = await useFetch<Array<Post>>(apiUrl);
+// Watch route query → update store (and form)
+watch(
+  () => route.query,
+  (q) => {
+    searchStore.setFromRoute(q);
+    Object.assign(form, {
+      keyword: searchStore.keyword,
+      authorName: searchStore.authorName,
+      createdAfter: searchStore.createdAfter,
+      createdBefore: searchStore.createdBefore,
+      sortBy: searchStore.sortBy,
+      order: searchStore.order
+    });
+    refresh();
+  }
+);
+
+// Click search → copy form values into store → update query
+async function performSearch() {
+  searchStore.keyword = form.keyword;
+  searchStore.authorName = form.authorName;
+  searchStore.createdAfter = form.createdAfter;
+  searchStore.createdBefore = form.createdBefore;
+  searchStore.sortBy = form.sortBy;
+  searchStore.order = form.order;
+  searchStore.page = 1; // reset to first page
+  await router.push({ query: searchStore.queryParams });
+}
+
+// Paging
+function nextPage() {
+  if (posts.value.length === searchStore.size) {
+    searchStore.page++;
+    router.push({ query: searchStore.queryParams });
+  }
+}
+function prevPage() {
+  if (searchStore.page > 1) {
+    searchStore.page--;
+    router.push({ query: searchStore.queryParams });
+  }
+}
 </script>
 
 <template>
   <div class="container">
-    <h1 class="page-title">All Posts</h1>
+    <h1>{{ t("posts.search") }}</h1>
 
-    <div v-if="posts && posts.length === 0" class="empty">
-      No posts available.
+    <!-- Filters bound to form state, not store -->
+    <div class="filters">
+      <input v-model="form.keyword" placeholder="Search title/content..." />
+      <input v-model="form.authorName" placeholder="Author name..." />
+      <input type="datetime-local" v-model="form.createdAfter" />
+      <input type="datetime-local" v-model="form.createdBefore" />
+      <select v-model="form.sortBy">
+        <option value="createdAt">Created At</option>
+        <option value="updatedAt">Updated At</option>
+      </select>
+      <select v-model="form.order">
+        <option value="desc">Descending</option>
+        <option value="asc">Ascending</option>
+      </select>
+      <button @click="performSearch">{{ t("posts.search") }}</button>
     </div>
 
-    <div
-      v-else
-      v-for="post in posts"
-      :key="post.id"
-      class="post-card"
-    >
-      <NuxtLink :to="`/post/${post.id}`" class="post-title-link">
-        <h2 class="post-title">{{ post.title }}</h2>
-      </NuxtLink>
+    <!-- Results -->
+    <div v-if="pending">Loading...</div>
+    <div v-else-if="error">Error loading posts</div>
+    <div v-else-if="posts.length === 0">No posts available</div>
 
-      <div class="meta">
-        {{ t('posts.author') }}
-        <NuxtLink
-          :to="`/user/${post.author.id}`"
-          class="author-link"
-        >
-          {{ post.author.username }}
+    <div v-else>
+      <div v-for="post in posts" :key="post.id" class="post-card">
+        <NuxtLink :to="`/post/${post.id}`">
+          <h2>{{ post.title }}</h2>
         </NuxtLink>
-        |
-        <span class="date">{{ new Date(post.createdAt).toLocaleString() }}</span>
+        <div>
+          {{ t("posts.author") }}:
+          <NuxtLink :to="`/user/${post.author.id}`">
+            {{ post.author.username }}
+          </NuxtLink>
+          |
+          <ClientOnly>
+            {{ new Date(post.createdAt).toLocaleString() }}
+          </ClientOnly>
+        </div>
       </div>
 
-      <hr />
+      <!-- Pagination -->
+      <div class="pagination">
+        <button @click="prevPage" :disabled="searchStore.page <= 1">Prev</button>
+        <span>Page {{ searchStore.page }}</span>
+        <button
+          @click="nextPage"
+          :disabled="posts.length < searchStore.size"
+        >
+          Next
+        </button>
+      </div>
     </div>
   </div>
 </template>
-
-<style scoped>
-.container {
-  max-width: 800px;
-  margin: 40px auto;
-  padding: 0 20px;
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  color: #333;
-}
-
-.page-title {
-  font-size: 2.25rem;
-  font-weight: bold;
-  margin-bottom: 2rem;
-  text-align: center;
-}
-
-.empty {
-  text-align: center;
-  color: #888;
-  font-size: 1rem;
-  margin-top: 2rem;
-}
-
-.post-card {
-  background-color: #fff;
-  border-radius: 10px;
-  padding: 20px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  transition: box-shadow 0.2s ease;
-  margin-bottom: 1.5rem;
-}
-
-.post-card:hover {
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-}
-
-.post-title-link {
-  text-decoration: none;
-  color: inherit;
-}
-
-.post-title {
-  font-size: 1.5rem;
-  font-weight: 600;
-  margin: 0 0 0.5rem 0;
-}
-
-.meta {
-  font-size: 0.9rem;
-  color: #666;
-  margin-bottom: 1rem;
-}
-
-.meta .author {
-  font-weight: 500;
-}
-
-.meta .date {
-  font-style: italic;
-}
-
-hr {
-  border: none;
-  border-top: 1px solid #eee;
-}
-</style>
