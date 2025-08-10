@@ -3,7 +3,10 @@ import type Post from "~/types/Post";
 
 const route = useRoute();
 const postId = route.params.id as string;
-const { data: post, error } = await useFetch<Post>(`/api/post/${postId}`);
+
+const config = useRuntimeConfig();
+// TODO: why does this api need BASE_URL?
+const { data: post, error } = await useFetch<Post>(`${config.public.BASE_URL}/post/${postId}`);
 
 const userStore = useUserStore();
 
