@@ -5,8 +5,14 @@ const route = useRoute();
 const postId = route.params.id as string;
 
 const config = useRuntimeConfig();
+
+const post = ref<Post | null>(null);
 // TODO: why does this api need BASE_URL?
-const { data: post, error } = await useFetch<Post>(`${config.public.BASE_URL}/post/${postId}`);
+// fix this page blocks ec2 server
+const res = await fetch(`${config.public.BASE_URL}/post/${postId}`);
+
+post.value = res.ok ? await res.json() : null;
+const error = res.ok ? null : new Error("Failed to load post");
 
 const userStore = useUserStore();
 
