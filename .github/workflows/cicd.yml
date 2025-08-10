@@ -34,13 +34,12 @@ jobs:
         mkdir -p .sbp-client-nuxt
         mv * .sbp-client-nuxt/
         
-
     - name: Build
       working-directory: .sbp-client-nuxt
       run: npm install && npm run build
 
     - name: Copy output to VM with timestamp
-      working-directory: ..
+      working-directory: ${{ github.workspace }}
       run: |
         TIMESTAMP=$(date +%Y%m%d_%H%M%S)
         tar -czf "output_$TIMESTAMP.tar.gz" .sbp-client-nuxt
