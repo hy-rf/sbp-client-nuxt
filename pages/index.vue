@@ -6,6 +6,15 @@ const route = useRoute();
 const router = useRouter();
 const config = useRuntimeConfig();
 
+useSeoMeta({
+  title: t("posts.title"),
+  // description: t("posts.searchDescription"),
+  ogTitle: t("posts.title"),
+  // ogDescription: t("posts.searchDescription"),
+  ogType: "website",
+  twitterCard: "summary",
+});
+
 const keyword = ref(route.query.keyword as string || "");
 const authorName = ref(route.query.authorName as string || "");
 const createdAfter = ref(route.query.createdAfter as string || "");

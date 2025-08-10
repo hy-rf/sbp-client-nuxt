@@ -12,6 +12,18 @@ const { t } = useI18n();
 const replyContent = ref("");
 const replyMessage = ref("");
 
+useSeoMeta({
+  title: () => post.value ? post.value.title : "Post",
+  description: () => post.value ? post.value.content?.slice(0, 160) : "View post details",
+  ogTitle: () => post.value ? post.value.title : "Post",
+  ogDescription: () => post.value ? post.value.content?.slice(0, 160) : "View post details",
+  ogType: "article",
+  ogUrl: `https://udevkit.lol/post/${postId}`,
+  twitterCard: "summary",
+  twitterTitle: () => post.value ? post.value.title : "Post",
+  twitterDescription: () => post.value ? post.value.content?.slice(0, 160) : "View post details",
+});
+
 const submitReply = async () => {
   replyMessage.value = "";
   try {
