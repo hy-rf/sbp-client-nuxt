@@ -18,11 +18,17 @@ const form = reactive({
   createdAfter: searchStore.createdAfter,
   createdBefore: searchStore.createdBefore,
   sortBy: searchStore.sortBy,
-  order: searchStore.order
+  order: searchStore.order,
+  size: searchStore.size,
 });
 
 // API fetching
-const { data: posts, pending, refresh, error } = await useAsyncData(
+const {
+  data: posts,
+  pending,
+  refresh,
+  error,
+} = await useAsyncData(
   () => `postsSearch-${JSON.stringify(route.query)}`,
   () => fetchPosts(route.query),
   { default: () => [] as Post[] }
@@ -39,11 +45,16 @@ watch(
       createdAfter: searchStore.createdAfter,
       createdBefore: searchStore.createdBefore,
       sortBy: searchStore.sortBy,
-      order: searchStore.order
+      order: searchStore.order,
+      size: searchStore.size,
     });
     refresh();
   }
 );
+
+async function changeSize() {
+  router.push({ query: searchStore.queryParams });
+}
 
 // Click search → copy form values into store → update query
 async function performSearch() {
@@ -90,6 +101,13 @@ function prevPage() {
         <option value="desc">Descending</option>
         <option value="asc">Ascending</option>
       </select>
+      <select v-model="searchStore.size" @change="changeSize">
+        <option :value="1">1</option>
+        <option :value="5">5</option>
+        <option :value="10">10</option>
+        <option :value="20">20</option>
+        <option :value="50">50</option>
+      </select>
       <button @click="performSearch">{{ t("posts.search") }}</button>
     </div>
 
@@ -117,12 +135,11 @@ function prevPage() {
 
       <!-- Pagination -->
       <div class="pagination">
-        <button @click="prevPage" :disabled="searchStore.page <= 1">Prev</button>
+        <button @click="prevPage" :disabled="searchStore.page <= 1">
+          Prev
+        </button>
         <span>Page {{ searchStore.page }}</span>
-        <button
-          @click="nextPage"
-          :disabled="posts.length < searchStore.size"
-        >
+        <button @click="nextPage" :disabled="posts.length < searchStore.size">
           Next
         </button>
       </div>
