@@ -9,7 +9,7 @@ const config = useRuntimeConfig();
 const post = ref<Post | null>(null);
 // TODO: why does this api need BASE_URL?
 // fix this page blocks ec2 server
-const res = await fetch(`${config.public.BASE_URL}/post/${postId}`);
+const res = await fetch(`https://udevkit.lol/api/post/${postId}`);
 
 post.value = res.ok ? await res.json() : null;
 const error = res.ok ? null : new Error("Failed to load post");
