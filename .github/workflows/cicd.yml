@@ -33,10 +33,10 @@ jobs:
       run: |
         mkdir -p .sbp-client-nuxt
         mv * .sbp-client-nuxt/
-        cd .sbp-client-nuxt
-        ls -la
+        
 
     - name: Build
+      working-directory: .sbp-client-nuxt
       run: npm install && npm run build
 
     - name: Copy output to VM with timestamp
