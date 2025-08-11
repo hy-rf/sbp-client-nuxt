@@ -39,7 +39,7 @@ jobs:
       run: |
         TIMESTAMP=$(date +%Y%m%d_%H%M%S)
         echo "TIMESTAMP=$TIMESTAMP" >> $GITHUB_ENV
-        echo "VERSION=\"${{ env.TIMESTAMP }}\"" >> .env.production
+        echo "VERSION=\"$TIMESTAMP\"" >> .env.production
         cat .env.production
         npm install && npm run build
 
