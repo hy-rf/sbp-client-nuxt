@@ -19,6 +19,7 @@ const form = reactive({
   createdBefore: searchStore.createdBefore,
   sortBy: searchStore.sortBy,
   order: searchStore.order,
+  page: searchStore.page,
   size: searchStore.size,
 });
 
@@ -46,12 +47,13 @@ watch(
       createdBefore: searchStore.createdBefore,
       sortBy: searchStore.sortBy,
       order: searchStore.order,
+      page: searchStore.page,
       size: searchStore.size,
     });
-    refresh();
   }
 );
 
+// Change size → update store and query ( No search button click needed )
 async function changeSize() {
   router.push({ query: searchStore.queryParams });
 }
@@ -87,7 +89,7 @@ function prevPage() {
   <div class="container">
     <h1>{{ t("posts.search") }}</h1>
 
-    <!-- Filters bound to form state, not store -->
+    <!-- Filters bound to form state, not store, except  -->
     <div class="filters">
       <input v-model="form.keyword" placeholder="Search title/content..." />
       <input v-model="form.authorName" placeholder="Author name..." />
