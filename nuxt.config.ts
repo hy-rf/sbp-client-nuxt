@@ -19,14 +19,13 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       VERSION: process.env.VERSION,
-      BASE_URL: process.env.NUXT_PUBLIC_BASE_URL
     },
   },
-  nitro: {
-    routeRules: {
-      "/sbapi/**": { proxy: `${process.env.NUXT_PUBLIC_BASE_URL}/**` },
-    },
-  },
+  // nitro: {
+  //   routeRules: {
+  //     "/sbapi/**": { proxy: `${process.env.NUXT_PUBLIC_BASE_URL}/**` },
+  //   },
+  // },
 
   i18n: {
     strategy: 'no_prefix',
