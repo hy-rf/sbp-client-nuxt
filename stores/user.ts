@@ -8,7 +8,7 @@ export const useUserStore = defineStore("user", {
   }),
   actions: {
     async fetchUser() {
-      const res = await fetch("/sbapi/me", { credentials: "include" });
+      const res = await fetch("/api/me", { credentials: "include" });
       if (!res.ok) {
         this.username = "";
         this.roles = [];
