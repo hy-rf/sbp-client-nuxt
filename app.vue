@@ -20,6 +20,8 @@ watch(
     }
   }
 );
+const runtimeConfig = useRuntimeConfig();
+
 </script>
 
 <template>
@@ -83,6 +85,7 @@ watch(
   <main class="main-content">
     <NuxtPage />
   </main>
+  <footer>Version: {{ runtimeConfig.public.VERSION }}</footer>
 </template>
 
 <style scoped>

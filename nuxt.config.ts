@@ -18,6 +18,7 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     public: {
+      VERSION: process.env.VERSION,
       BASE_URL: process.env.NUXT_PUBLIC_BASE_URL
     },
   },

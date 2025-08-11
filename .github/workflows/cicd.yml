@@ -36,15 +36,18 @@ jobs:
         
     - name: Build
       working-directory: .sbp-client-nuxt
-      run: npm install && npm run build
+      run: |
+        TIMESTAMP=$(date +%Y%m%d_%H%M%S)
+        echo "TIMESTAMP=$TIMESTAMP" >> $GITHUB_ENV
+        echo "VERSION=\"${{ env.TIMESTAMP }}\"" >> .env.production
+        npm install && npm run build
 
     - name: Copy output to VM with timestamp
       working-directory: ${{ github.workspace }}
       run: |
-        TIMESTAMP=$(date +%Y%m%d_%H%M%S)
-        tar -czf "output_$TIMESTAMP.tar.gz" .sbp-client-nuxt
-        scp -i ~/.ssh/id_rsa.pem -o StrictHostKeyChecking=no "output_$TIMESTAMP.tar.gz" ec2-user@${{ secrets.HOST }}:~/JAVASERVER/
-        echo "TIMESTAMP=$TIMESTAMP" >> $GITHUB_ENV
+        tar -czf "output_${{ env.TIMESTAMP }}.tar.gz" .sbp-client-nuxt
+        scp -i ~/.ssh/id_rsa.pem -o StrictHostKeyChecking=no "output_${{ env.TIMESTAMP }}.tar.gz" ec2-user@${{ secrets.HOST }}:~/JAVASERVER/
+        
 
     - name: Restart App on VM
       run: |
