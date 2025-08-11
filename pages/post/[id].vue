@@ -36,7 +36,7 @@ useSeoMeta({
 const submitReply = async () => {
   replyMessage.value = "";
   try {
-    const res = await fetch("/api/reply", {
+    const res = await fetch("/sbapi/reply", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: new URLSearchParams({

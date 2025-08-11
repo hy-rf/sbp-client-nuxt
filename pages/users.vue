@@ -5,7 +5,7 @@ const users = ref([]);
 
 onMounted(async () => {
   try {
-    const res = await fetch("/api/users");
+    const res = await fetch("/sbapi/users");
     if (!res.ok) throw new Error("Failed to fetch users");
     users.value = await res.json();
   } catch (err) {

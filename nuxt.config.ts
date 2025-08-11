@@ -23,7 +23,7 @@ export default defineNuxtConfig({
   },
   nitro: {
     routeRules: {
-      "/api/**": { proxy: `${process.env.NUXT_PUBLIC_BASE_URL}/**` },
+      "/sbapi/**": { proxy: `${process.env.NUXT_PUBLIC_BASE_URL}/**` },
     },
   },
 

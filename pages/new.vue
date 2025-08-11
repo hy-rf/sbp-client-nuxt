@@ -17,7 +17,7 @@ const submitPost = async () => {
   }
 
   try {
-    const response = await fetch("/api/post", {
+    const response = await fetch("/sbapi/post", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

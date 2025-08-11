@@ -1,6 +1,6 @@
 <script setup lang="ts">
 async function refresh() {
-  await fetch("/api/refresh", { method: "get", credentials: "include" });
+  await fetch("/sbapi/refresh", { method: "get", credentials: "include" });
 }
 </script>
 
