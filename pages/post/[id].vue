@@ -1,6 +1,13 @@
 <script setup lang="ts">
 import type Post from "~/types/Post";
 
+definePageMeta({
+  validate: async (route) => {
+    // Check if the id is made up of digits
+    return typeof route.params.id === 'string' && /^\d+$/.test(route.params.id)
+  }
+})
+
 const route = useRoute();
 const postId = route.params.id as string;
 

@@ -3,6 +3,61 @@ import { usePostSearchStore } from "~/stores/post_search";
 import { fetchPosts } from "~/services/posts_service";
 import type Post from "~/types/Post";
 
+// These func will move to util
+// Helper to convert local time (UTC+8) to UTC ISO string
+function localToUTC(localValue: string): string {
+  if (!localValue) return "";
+  // localValue: "YYYY-MM-DDTHH:mm"
+  const localDate = new Date(localValue);
+  // return localDate.toLocaleString('zh-TW', {
+  //               year: 'numeric',
+  //               month: '2-digit',
+  //               day: '2-digit',
+  //               hour: '2-digit',
+  //               minute: '2-digit',
+  //               second: '2-digit',
+  //               hour12: false,
+  //               timeZone: 'utc'
+  //               })
+  //               .replace(/\//g, '-')
+  //               .replace(',', '')
+  //               .replace(' ', 'T')
+  return localDate.toISOString().replace(/\.000Z$/, "");
+}
+// When initializing form, convert UTC from backend to local for input
+function utcToLocal(utcValue: string): string {
+  if (!utcValue) return "";
+  const utcDate = new Date(utcValue + "Z");
+  console.log(
+    utcDate.toLocaleString(),
+    utcDate.toLocaleString("zh-TW", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: false,
+      timeZone: "Asia/Taipei",
+    })
+  );
+
+  return utcDate
+    .toLocaleString("zh-TW", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: false,
+      timeZone: "Asia/Taipei",
+    })
+    .replace(/\//g, "-")
+    .replace(",", "")
+    .replace(" ", "T");
+}
+
 const { t } = useI18n();
 const route = useRoute();
 const router = useRouter();
@@ -15,8 +70,8 @@ searchStore.setFromRoute(route.query);
 const form = reactive({
   keyword: searchStore.keyword,
   authorName: searchStore.authorName,
-  createdAfter: searchStore.createdAfter,
-  createdBefore: searchStore.createdBefore,
+  createdAfter: utcToLocal(searchStore.createdAfter),
+  createdBefore: utcToLocal(searchStore.createdBefore),
   sortBy: searchStore.sortBy,
   order: searchStore.order,
   page: searchStore.page,
@@ -40,11 +95,13 @@ watch(
   () => route.query,
   (q) => {
     searchStore.setFromRoute(q);
+    console.log("l");
+
     Object.assign(form, {
       keyword: searchStore.keyword,
       authorName: searchStore.authorName,
-      createdAfter: searchStore.createdAfter,
-      createdBefore: searchStore.createdBefore,
+      createdAfter: utcToLocal(searchStore.createdAfter),
+      createdBefore: utcToLocal(searchStore.createdBefore),
       sortBy: searchStore.sortBy,
       order: searchStore.order,
       page: searchStore.page,
@@ -55,32 +112,42 @@ watch(
 
 // Change size → update store and query ( No search button click needed )
 async function changeSize() {
-  router.push({ query: searchStore.queryParams });
+  router.push({
+    query: searchStore.queryParams,
+  });
 }
 
 // Click search → copy form values into store → update query
 async function performSearch() {
+  console.log(form);
+
   searchStore.keyword = form.keyword;
   searchStore.authorName = form.authorName;
-  searchStore.createdAfter = form.createdAfter;
-  searchStore.createdBefore = form.createdBefore;
+  searchStore.createdAfter = localToUTC(form.createdAfter);
+  searchStore.createdBefore = localToUTC(form.createdBefore);
   searchStore.sortBy = form.sortBy;
   searchStore.order = form.order;
   searchStore.page = 1; // reset to first page
-  await router.push({ query: searchStore.queryParams });
+  await router.push({
+    query: searchStore.queryParams,
+  });
 }
 
 // Paging
 function nextPage() {
   if (posts.value.length === searchStore.size) {
     searchStore.page++;
-    router.push({ query: searchStore.queryParams });
+    router.push({
+      query: searchStore.queryParams,
+    });
   }
 }
 function prevPage() {
   if (searchStore.page > 1) {
     searchStore.page--;
-    router.push({ query: searchStore.queryParams });
+    router.push({
+      query: searchStore.queryParams,
+    });
   }
 }
 </script>
@@ -90,7 +157,11 @@ function prevPage() {
     <h1>{{ t("posts.search") }}</h1>
 
     <!-- Filters bound to form state, not store, except  -->
-    <div class="filters">
+    <form
+      class="filters"
+      @submit.prevent="performSearch"
+      aria-label="Post search filters"
+    >
       <input v-model="form.keyword" placeholder="Search title/content..." />
       <input v-model="form.authorName" placeholder="Author name..." />
       <input type="datetime-local" v-model="form.createdAfter" />
@@ -110,8 +181,8 @@ function prevPage() {
         <option :value="20">20</option>
         <option :value="50">50</option>
       </select>
-      <button @click="performSearch">{{ t("posts.search") }}</button>
-    </div>
+      <button type="submit">{{ t("posts.search") }}</button>
+    </form>
 
     <!-- Results -->
     <div v-if="pending">Loading...</div>
@@ -119,24 +190,43 @@ function prevPage() {
     <div v-else-if="posts.length === 0">No posts available</div>
 
     <div v-else>
-      <div v-for="post in posts" :key="post.id" class="post-card">
-        <NuxtLink :to="`/post/${post.id}`">
-          <h2>{{ post.title }}</h2>
-        </NuxtLink>
-        <div>
-          {{ t("posts.author") }}:
-          <NuxtLink :to="`/user/${post.author.id}`">
-            {{ post.author.username }}
+      <section aria-label="Posts list">
+        <article v-for="post in posts" :key="post.id" class="post-card">
+          <NuxtLink :to="`/post/${post.id}`">
+            <h2>{{ post.title }}</h2>
           </NuxtLink>
-          |
-          <ClientOnly>
-            {{ new Date(post.createdAt).toLocaleString() }}
-          </ClientOnly>
-        </div>
-      </div>
+          <div>
+            {{ t("posts.author") }}:
+            <NuxtLink :to="`/user/${post.author.id}`">
+              {{ post.author.username }}
+            </NuxtLink>
+            |
+            <ClientOnly>
+              <time :datetime="new Date(post.createdAt)">
+                {{
+                  new Date(post.createdAt + "Z")
+                    .toLocaleString("zh-TW", {
+                      year: "numeric",
+                      month: "2-digit",
+                      day: "2-digit",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                      second: "2-digit",
+                      hour12: false,
+                      timeZone: "Asia/Taipei",
+                    })
+                    .replace(/\//g, "-")
+                    .replace(",", "")
+                    .replace(" ", " ")
+                }}
+              </time>
+            </ClientOnly>
+          </div>
+        </article>
+      </section>
 
       <!-- Pagination -->
-      <div class="pagination">
+      <div class="pagination" aria-label="Posts pagination">
         <button @click="prevPage" :disabled="searchStore.page <= 1">
           Prev
         </button>
