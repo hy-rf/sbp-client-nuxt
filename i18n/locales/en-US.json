@@ -19,7 +19,15 @@
     "list": "List of Posts",
     "author": "By ",
     "created_at": "Created at",
-    "search": "Search Posts"
+    "search": "Search Posts",
+    "filter": {
+      "title_content": "Title or Content",
+      "author": "Author",
+      "created_at_start":"Created start",
+      "created_at_end":"Created end",
+      "updated_at": "Updated at"
+    },
+    "page_size": "Page Size"
   },
   "post": {
     "author": "By ",

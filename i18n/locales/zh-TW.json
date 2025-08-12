@@ -19,7 +19,15 @@
     "list": "文章列表",
     "author": "作者",
     "created_at": "建立時間",
-    "search": "搜尋文章"
+    "search": "搜尋文章",
+    "filter": {
+      "title_content": "標題或內容",
+      "author": "作者",
+      "created_at_start":"建立時間：開始",
+      "created_at_end":"建立時間：結束",
+      "updated_at": "更新時間"
+    },
+    "page_size": "每頁顯示數量"
   },
   "post": {
     "author": "作者",

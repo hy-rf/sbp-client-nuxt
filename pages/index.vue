@@ -28,8 +28,8 @@ function localToUTC(localValue: string): string {
 function utcToLocal(utcValue: string): string {
   if (!utcValue) return "";
   console.log(utcValue);
-  
-  const utcDate = new Date(utcValue+"Z");
+
+  const utcDate = new Date(utcValue + "Z");
   console.log(
     utcDate.toLocaleString(),
     utcDate.toLocaleString("zh-TW", {
@@ -157,34 +157,52 @@ function prevPage() {
 <template>
   <div class="container">
     <h1>{{ t("posts.search") }}</h1>
-
     <!-- Filters bound to form state, not store, except  -->
-    <form
-      class="filters"
-      @submit.prevent="performSearch"
-      aria-label="Post search filters"
-    >
-      <input v-model="form.keyword" placeholder="Search title/content..." />
-      <input v-model="form.authorName" placeholder="Author name..." />
-      <input type="datetime-local" v-model="form.createdAfter" />
-      <input type="datetime-local" v-model="form.createdBefore" />
-      <select v-model="form.sortBy">
-        <option value="createdAt">Created At</option>
-        <option value="updatedAt">Updated At</option>
-      </select>
-      <select v-model="form.order">
-        <option value="desc">Descending</option>
-        <option value="asc">Ascending</option>
-      </select>
-      <select v-model="searchStore.size" @change="changeSize">
+     <div class="filters-container">
+
+       <form
+         class="filters"
+         @submit.prevent="performSearch"
+         aria-label="Post search filters"
+       >
+         <div class="search-fields">
+           <input v-model="form.keyword" :placeholder="t('posts.filter.title_content')" />
+           <input v-model="form.authorName" :placeholder="t('posts.filter.author')" />
+         </div>
+         <br />
+         <div class="date-filters">
+           <label
+             >{{ t("posts.filter.created_at_start") }}
+             <input type="datetime-local" v-model="form.createdAfter" />
+           </label>
+           <label
+             >{{ t("posts.filter.created_at_end") }}
+             <input type="datetime-local" v-model="form.createdBefore" />
+           </label>
+         </div>
+         <div class="sort-options">
+           <div>
+             <select v-model="form.sortBy">
+               <option value="createdAt">Created At</option>
+               <option value="updatedAt">Updated At</option>
+             </select>
+             <select v-model="form.order">
+               <option value="desc">Descending</option>
+               <option value="asc">Ascending</option>
+             </select>
+           </div>
+         </div>
+         <button type="submit">{{ t("posts.search") }}</button>
+       </form>
+      </div>
+      <label for="pagesize">{{ t("posts.page_size") }}</label>
+      <select id="pagesize" v-model="searchStore.size" @change="changeSize">
         <option :value="1">1</option>
         <option :value="5">5</option>
         <option :value="10">10</option>
         <option :value="20">20</option>
         <option :value="50">50</option>
       </select>
-      <button type="submit">{{ t("posts.search") }}</button>
-    </form>
 
     <!-- Results -->
     <div v-if="pending">Loading...</div>
@@ -240,128 +258,6 @@ function prevPage() {
     </div>
   </div>
 </template>
-<!-- <script setup lang="ts">
-import type Post from "~/types/Post";
-
-const { t } = useI18n();
-const route = useRoute();
-const router = useRouter();
-const config = useRuntimeConfig();
-
-useSeoMeta({
-  title: t("posts.title"),
-  // description: t("posts.searchDescription"),
-  ogTitle: t("posts.title"),
-  // ogDescription: t("posts.searchDescription"),
-  ogType: "website",
-  twitterCard: "summary",
-});
-
-const keyword = ref(route.query.keyword as string || "");
-const authorName = ref(route.query.authorName as string || "");
-const createdAfter = ref(route.query.createdAfter as string || "");
-const createdBefore = ref(route.query.createdBefore as string || "");
-const sortBy = ref(route.query.sortBy as string || "createdAt");
-const order = ref(route.query.order as string || "desc");
-
-const queryParams = computed(() => ({
-  keyword: keyword.value || undefined,
-  authorName: authorName.value || undefined,
-  createdAfter: createdAfter.value || undefined,
-  createdBefore: createdBefore.value || undefined,
-  sortBy: sortBy.value,
-  order: order.value,
-}));
-
-const { data: posts, pending: loading, refresh } = await useAsyncData(
-  'postsSearch',
-  // If use /api/posts/search it will call localhost:8080/posts/search (by nitro proxy)
-  // So use the full URL to avoid that
-  () => $fetch<Array<Post>>(`/api/posts/search`, {
-    query: queryParams.value,
-  }),
-  {
-    default: () => [],
-  }
-);
-
-async function performSearch() {
-  await router.push({ query: queryParams.value });
-  await refresh();
-  console.log("Search performed with params:", queryParams.value);
-}
-
-watch(
-  () => route.query,
-  (newQuery) => {
-    // Update refs from route.query
-    keyword.value = newQuery.keyword as string || "";
-    authorName.value = newQuery.authorName as string || "";
-    createdAfter.value = newQuery.createdAfter as string || "";
-    createdBefore.value = newQuery.createdBefore as string || "";
-    sortBy.value = newQuery.sortBy as string || "createdAt";
-    order.value = newQuery.order as string || "desc";
-
-    // Refresh data based on new query params
-    refresh();
-  },
-  { immediate: true }
-);
-</script>
-
-<template>
-  <div class="container">
-    <h1 class="page-title">{{ t("posts.search") }}</h1>
-
-    <div class="filters">
-      <input
-        v-model="keyword"
-        type="text"
-        placeholder="Search title/content..."
-      />
-      <input v-model="authorName" type="text" placeholder="Author name..." />
-      <input v-model="createdAfter" type="datetime-local" />
-      <input v-model="createdBefore" type="datetime-local" />
-
-      <select v-model="sortBy">
-        <option value="createdAt">Created At</option>
-        <option value="updatedAt">Updated At</option>
-      </select>
-      <select v-model="order">
-        <option value="desc">Descending</option>
-        <option value="asc">Ascending</option>
-      </select>
-
-      <button @click="performSearch" :disabled="false">
-        {{ "Search" }}
-      </button>
-    </div>
-
-    <div v-if="!loading && posts.length === 0" class="empty">
-      No posts available.
-    </div>
-
-    <div v-else v-for="post in posts" :key="post.id" class="post-card">
-      <NuxtLink :to="`/post/${post.id}`" class="post-title-link">
-        <h2 class="post-title">{{ post.title }}</h2>
-      </NuxtLink>
-
-      <div class="meta">
-        {{ t("posts.author") }}
-        <NuxtLink :to="`/user/${post.author.id}`" class="author-link">
-          {{ post.author.username }}
-        </NuxtLink>
-        |
-        <ClientOnly>
-          <span class="date">{{
-            new Date(post.createdAt).toLocaleString()
-          }}</span>
-        </ClientOnly>
-      </div>
-      <hr />
-    </div>
-  </div>
-</template>
 
 <style scoped>
 .filters {
@@ -386,4 +282,8 @@ watch(
   background-color: #ccc;
   cursor: not-allowed;
 }
-</style> -->
+.filters-container {
+  display: flex;
+  flex-direction: row;
+}
+</style>
