@@ -222,7 +222,7 @@ function prevPage() {
             </NuxtLink>
             |
             <ClientOnly>
-              <time :datetime="new Date(post.createdAt).toLocaleDateString()">
+              <time :datetime="new Date(post.createdAt).toISOString()">
                 {{
                   new Date(post.createdAt)
                     .toLocaleString("zh-TW", {
