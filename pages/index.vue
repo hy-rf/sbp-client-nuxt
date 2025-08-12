@@ -7,21 +7,7 @@ import type Post from "~/types/Post";
 // Helper to convert local time (UTC+8) to UTC ISO string
 function localToUTC(localValue: string): string {
   if (!localValue) return "";
-  // localValue: "YYYY-MM-DDTHH:mm"
   const localDate = new Date(localValue);
-  // return localDate.toLocaleString('zh-TW', {
-  //               year: 'numeric',
-  //               month: '2-digit',
-  //               day: '2-digit',
-  //               hour: '2-digit',
-  //               minute: '2-digit',
-  //               second: '2-digit',
-  //               hour12: false,
-  //               timeZone: 'utc'
-  //               })
-  //               .replace(/\//g, '-')
-  //               .replace(',', '')
-  //               .replace(' ', 'T')
   return localDate.toISOString().replace(/\.000Z$/, "");
 }
 // When initializing form, convert UTC from backend to local for input
