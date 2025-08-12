@@ -25,7 +25,7 @@ const runtimeConfig = useRuntimeConfig();
 </script>
 
 <template>
-  <header class="main-header">
+  <header>
     <nav class="navbar">
       <div class="nav-left">
         <ul class="nav-links">
@@ -89,7 +89,7 @@ const runtimeConfig = useRuntimeConfig();
 </template>
 
 <style scoped>
-.main-header {
+header {
   position: sticky;
   top: 0;
   z-index: 100;
@@ -153,7 +153,7 @@ const runtimeConfig = useRuntimeConfig();
 .locale-button {
   background: transparent;
   border: 1px solid #eebbc3;
-  color: #eebbc3;
+  color: #ffffff;
   padding: 0.2rem 0.7rem;
   border-radius: 4px;
   cursor: pointer;
@@ -180,11 +180,12 @@ const runtimeConfig = useRuntimeConfig();
   text-align: left;
   font-size: 0.95rem;
   cursor: pointer;
+  color: #ffffff;
 }
 
 .locale-menu button:hover,
 .locale-menu button.active {
-  color: #eebbc3;
+  color: #ff0026;
   background: #232946;
 }
 
@@ -214,18 +215,8 @@ const runtimeConfig = useRuntimeConfig();
   box-shadow: 0 2px 16px rgba(35, 41, 70, 0.07);
 }
 
-@media (max-width: 700px) {
-  .navbar {
-    flex-direction: column;
-    align-items: flex-start;
-    padding: 1rem;
-  }
-  .main-content {
-    padding: 1rem 0.3rem;
-  }
-  .nav-links {
-    gap: 0.7rem;
-  }
+@media (min-width: 768px) {
+  
 }
 </style>
 

@@ -4,7 +4,7 @@ import { API_BASE_URL } from "~/constants/api_ constants";
 export default defineEventHandler(async (event) => {
   const body = await readBody(event); // { username, password }
   const token = getCookie(event, "token"); // read HttpOnly cookie if present
-  const backendUrl = `${API_BASE_URL}/login`; // adjust to your backend
+  const backendUrl = `${API_BASE_URL}/register`; // adjust to your backend
 
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
@@ -19,17 +19,6 @@ export default defineEventHandler(async (event) => {
     body: JSON.stringify(body),
     credentials: "include",
   });
-
-  const setCookieHeaders =
-    backendRes.headers.getSetCookie?.() ?? // Node 18+
-    backendRes.headers.get("set-cookie")?.split(",") ?? // fallback for multiple cookies
-    [];
-
-  if (Array.isArray(setCookieHeaders)) {
-    event.node.res.setHeader("Set-Cookie", setCookieHeaders);
-  } else if (setCookieHeaders) {
-    event.node.res.setHeader("Set-Cookie", [setCookieHeaders]);
-  }
 
   // Pass through backend status & body
   const text = await backendRes.text();

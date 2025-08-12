@@ -69,7 +69,4 @@ label {
   color: red;
   margin-top: 1rem;
 }
-#password {
-  color: white;
-}
 </style>

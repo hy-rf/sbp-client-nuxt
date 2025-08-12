@@ -10,7 +10,7 @@ const router = useRouter()
 const register = async () => {
   message.value = ''
   try {
-    const res = await fetch('/sbapi/register', {
+    const res = await fetch('/api/register', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username: username.value, password: password.value })

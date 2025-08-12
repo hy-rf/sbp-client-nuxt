@@ -30,11 +30,12 @@ export default defineNuxtConfig({
   i18n: {
     strategy: 'no_prefix',
     locales: [
-      { code: "en", name: "en-US", file: "en-US.json" },
-      { code: "jp", name: "jp-JP", file: "jp-JP.json" },
-      { code: "zh", name: "zh-CN", file: "zh-CN.json" },
+      { code: "en-US", name: "English(US)", file: "en-US.json" },
+      { code: "jp-JP", name: "日本語", file: "jp-JP.json" },
+      { code: "zh-TW", name: "繁體中文", file: "zh-TW.json" },
+      { code: "zh-CN", name: "中文", file: "zh-CN.json" },
     ],
-    defaultLocale: "en",
+    defaultLocale: "en-US",
   },
 
   tiptap: {
