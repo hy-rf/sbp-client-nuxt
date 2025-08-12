@@ -27,7 +27,9 @@ function localToUTC(localValue: string): string {
 // When initializing form, convert UTC from backend to local for input
 function utcToLocal(utcValue: string): string {
   if (!utcValue) return "";
-  const utcDate = new Date(utcValue + "Z");
+  console.log(utcValue);
+  
+  const utcDate = new Date(utcValue+"Z");
   console.log(
     utcDate.toLocaleString(),
     utcDate.toLocaleString("zh-TW", {
@@ -202,9 +204,9 @@ function prevPage() {
             </NuxtLink>
             |
             <ClientOnly>
-              <time :datetime="new Date(post.createdAt)">
+              <time :datetime="new Date(post.createdAt).toLocaleDateString()">
                 {{
-                  new Date(post.createdAt + "Z")
+                  new Date(post.createdAt)
                     .toLocaleString("zh-TW", {
                       year: "numeric",
                       month: "2-digit",
