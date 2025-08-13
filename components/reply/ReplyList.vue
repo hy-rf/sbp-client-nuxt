@@ -1,6 +1,7 @@
 // ...existing code...
 <script setup lang="ts">
 import type Reply from "~/types/Reply";
+import ReplyCard from "./ReplyCard.vue";
 
 const props = defineProps<{ postId?: string; replyId?: string }>();
 
@@ -21,12 +22,9 @@ watch(() => props.postId, load);
 
 <template>
   <ul>
-    <li v-for="r in replies" :key="r.id">
-      <strong>{{ r.author?.username || "Anon" }}</strong
-      >: {{ r.content }}
-      <ReplyList :replyId="r.id.toString()"></ReplyList>
-    </li>
-    <li v-if="!replies.length">No replies yet.</li>
+    <ReplyCard v-for="r in replies" :key="r.id" :reply="r" />
+    <!-- Display when No child replies for post -->
+    <li v-if="postId && !replies.length">No replies yet.</li>
   </ul>
 </template>
 
