@@ -53,6 +53,7 @@ const submitReply = async () => {
     if (res.ok) {
       replyMessage.value = "Reply submitted!";
       replyContent.value = "";
+      refreshReplies(); // Trigger a refresh of replies
       // Optionally, reload replies here
     } else {
       replyMessage.value = await res.text();
@@ -61,6 +62,11 @@ const submitReply = async () => {
     replyMessage.value = "Network error";
   }
 };
+
+const refreshKey = ref(0);
+function refreshReplies() {
+  refreshKey.value++;
+}
 </script>
 
 <template>
@@ -96,7 +102,7 @@ const submitReply = async () => {
       </div>
       <div class="reply-section">
         <h3 class="subtitle">{{ t("post.replies") }}</h3>
-        <ReplyList :postId="postId" />
+        <ReplyList :key="refreshKey" :postId="postId" />
       </div>
     </div>
 
