@@ -12,17 +12,24 @@ async function load() {
     replies.value = await $fetch<Reply[]>(`/api/post/${props.postId}/replies`);
   }
   if (props.replyId) {
-    replies.value = await $fetch<Reply[]>(`/api/reply/${props.replyId}/replies`);
+    replies.value = await $fetch<Reply[]>(
+      `/api/reply/${props.replyId}/replies`
+    );
   }
 }
 
 onMounted(load);
 watch(() => props.postId, load);
+
+const showReply = ref(true);
 </script>
 
 <template>
   <ul>
-    <ReplyCard v-for="r in replies" :key="r.id" :reply="r" />
+    <button v-if="replies.length" @click="showReply = !showReply">
+      {{ showReply ? "hide" : "show" }}
+    </button>
+    <ReplyCard v-if="showReply" v-for="r in replies" :key="r.id" :reply="r" />
     <!-- Display when No child replies for post -->
     <li v-if="postId && !replies.length">No replies yet.</li>
   </ul>
@@ -33,9 +40,10 @@ ul {
   list-style: none;
   margin: 0;
   padding: 0;
+  border-left: 1px solid black;
 }
 li {
-  padding: 0.35rem 0.5rem;
+  padding: 0.65rem 1.5rem;
   font-size: 0.85rem;
 }
 </style>
