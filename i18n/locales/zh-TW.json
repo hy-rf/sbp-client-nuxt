@@ -32,6 +32,7 @@
   "post": {
     "author": "作者",
     "author_info": "作者資訊",
-    "username": "使用者名稱："
+    "username": "使用者名稱：",
+    "replies": "回覆"
   }
 }

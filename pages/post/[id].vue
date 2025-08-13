@@ -40,8 +40,8 @@ const submitReply = async () => {
   try {
     const res = await fetch("/api/reply", {
       method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: new URLSearchParams({
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
         postId: postId,
         content: replyContent.value,
         // parentReplyId can be added here if replying to another reply
@@ -86,6 +86,10 @@ const submitReply = async () => {
             </span>
           </li>
         </ul>
+      </div>
+      <div class="reply-section">
+        <h3 class="subtitle">{{ t("post.replies") }}</h3>
+        <ReplyList :postId="postId" />
       </div>
     </div>
 

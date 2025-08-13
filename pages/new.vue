@@ -10,6 +10,8 @@ onBeforeUnmount(() => {
   unref(editor).destroy();
 });
 
+const router = useRouter();
+
 const submitPost = async () => {
   if (!title.value || !editor.value) {
     alert("Title or content is missing!");
@@ -34,7 +36,8 @@ const submitPost = async () => {
     }
 
     const result = await response.text();
-    alert(result); // or use router.push('/posts') if needed
+    alert(result);
+    router.push("/");
   } catch (error) {
     console.error(error);
     alert("Error creating post");
@@ -44,10 +47,10 @@ const submitPost = async () => {
 
 <template>
   <div>
-  <input
+    <input
       v-model="title"
       placeholder="Enter post title"
-      style="margin-bottom: 1rem; padding: 0.5rem; width: 100%;"
+      style="margin-bottom: 1rem; padding: 0.5rem; width: 100%"
     />
     <div v-if="editor">
       <button
@@ -170,7 +173,10 @@ const submitPost = async () => {
       </button>
     </div>
     <TiptapEditorContent :editor="editor" />
-    <button @click="submitPost" style="margin-top: 1rem; background-color: #4caf50; color: white;">
+    <button
+      @click="submitPost"
+      style="margin-top: 1rem; background-color: #4caf50; color: white"
+    >
       Submit Post
     </button>
   </div>

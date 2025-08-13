@@ -32,6 +32,7 @@
   "post": {
     "author": "By ",
     "author_info": "Author Info",
-    "username": "User name: "
+    "username": "User name: ",
+    "replies": "Replies"
   }
 }
