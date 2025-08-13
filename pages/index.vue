@@ -2,6 +2,7 @@
 import { usePostSearchStore } from "~/stores/post_search";
 import { fetchPosts } from "~/services/posts_service";
 import type Post from "~/types/Post";
+import PostCard from "~/components/posts/PostCard.vue";
 
 // These func will move to util
 // Helper to convert local time (UTC+8) to UTC ISO string
@@ -197,38 +198,7 @@ function prevPage() {
 
     <div v-else>
       <section aria-label="Posts list">
-        <article v-for="post in posts" :key="post.id" class="post-card">
-          <NuxtLink :to="`/post/${post.id}`">
-            <h2>{{ post.title }}</h2>
-          </NuxtLink>
-          <div>
-            {{ t("posts.author") }}:
-            <NuxtLink :to="`/user/${post.author.id}`">
-              {{ post.author.username }}
-            </NuxtLink>
-            |
-            <ClientOnly>
-              <time :datetime="new Date(post.createdAt).toISOString()">
-                {{
-                  new Date(post.createdAt)
-                    .toLocaleString("zh-TW", {
-                      year: "numeric",
-                      month: "2-digit",
-                      day: "2-digit",
-                      hour: "2-digit",
-                      minute: "2-digit",
-                      second: "2-digit",
-                      hour12: false,
-                      timeZone: "Asia/Taipei",
-                    })
-                    .replace(/\//g, "-")
-                    .replace(",", "")
-                    .replace(" ", " ")
-                }}
-              </time>
-            </ClientOnly>
-          </div>
-        </article>
+        <PostCard v-for="post in posts" :key="post.id"  :post="post"></PostCard>
       </section>
 
       <!-- Pagination -->
