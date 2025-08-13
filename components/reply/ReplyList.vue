@@ -2,14 +2,17 @@
 <script setup lang="ts">
 import type Reply from "~/types/Reply";
 
-const props = defineProps<{ postId: number | string }>();
+const props = defineProps<{ postId?: string; replyId?: string }>();
 
 const replies = ref<Reply[]>([]);
 
 async function load() {
-  if (!props.postId) return;
-  // Calls your Nitro server route: /api/post/{id}/replies
-  replies.value = await $fetch<Reply[]>(`/api/post/${props.postId}/replies`);
+  if (props.postId) {
+    replies.value = await $fetch<Reply[]>(`/api/post/${props.postId}/replies`);
+  }
+  if (props.replyId) {
+    replies.value = await $fetch<Reply[]>(`/api/reply/${props.replyId}/replies`);
+  }
 }
 
 onMounted(load);
@@ -21,6 +24,7 @@ watch(() => props.postId, load);
     <li v-for="r in replies" :key="r.id">
       <strong>{{ r.author?.username || "Anon" }}</strong
       >: {{ r.content }}
+      <ReplyList :replyId="r.id.toString()"></ReplyList>
     </li>
     <li v-if="!replies.length">No replies yet.</li>
   </ul>

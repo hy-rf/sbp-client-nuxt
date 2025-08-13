@@ -4,17 +4,17 @@ import type Post from "~/types/Post";
 definePageMeta({
   validate: async (route) => {
     // Check if the id is made up of digits
-    return typeof route.params.id === 'string' && /^\d+$/.test(route.params.id)
-  }
-})
+    return typeof route.params.id === "string" && /^\d+$/.test(route.params.id);
+  },
+});
 
 const route = useRoute();
 const postId = route.params.id as string;
 
 // fetch not working when ssr
-const { data: post, error } = await useAsyncData<Post>('post', () =>
+const { data: post, error } = await useAsyncData<Post>("post", () =>
   $fetch(`/api/post/${route.params.id}`)
-)
+);
 
 const userStore = useUserStore();
 
@@ -24,15 +24,18 @@ const replyContent = ref("");
 const replyMessage = ref("");
 
 useSeoMeta({
-  title: () => post.value ? post.value.title : "Post",
-  description: () => post.value ? post.value.content?.slice(0, 160) : "View post details",
-  ogTitle: () => post.value ? post.value.title : "Post",
-  ogDescription: () => post.value ? post.value.content?.slice(0, 160) : "View post details",
+  title: () => (post.value ? post.value.title : "Post"),
+  description: () =>
+    post.value ? post.value.content?.slice(0, 160) : "View post details",
+  ogTitle: () => (post.value ? post.value.title : "Post"),
+  ogDescription: () =>
+    post.value ? post.value.content?.slice(0, 160) : "View post details",
   ogType: "article",
   ogUrl: `https://udevkit.lol/post/${postId}`,
   twitterCard: "summary",
-  twitterTitle: () => post.value ? post.value.title : "Post",
-  twitterDescription: () => post.value ? post.value.content?.slice(0, 160) : "View post details",
+  twitterTitle: () => (post.value ? post.value.title : "Post"),
+  twitterDescription: () =>
+    post.value ? post.value.content?.slice(0, 160) : "View post details",
 });
 
 const submitReply = async () => {
@@ -67,9 +70,11 @@ const submitReply = async () => {
 
       <div class="content" v-html="post.content"></div>
 
-      <p class="meta">
-        Created at: {{ new Date(post.createdAt).toLocaleString() }}
-      </p>
+      <client-only>
+        <p class="meta">
+          Created at: {{ new Date(post.createdAt).toLocaleString() }}
+        </p>
+      </client-only>
 
       <hr />
 
@@ -81,7 +86,9 @@ const submitReply = async () => {
           </li>
           <li>
             <strong>Verified:</strong>
-            <span :class="post.author.emailVerified ? 'verified' : 'unverified'">
+            <span
+              :class="post.author.emailVerified ? 'verified' : 'unverified'"
+            >
               {{ post.author.emailVerified ? "Yes" : "No" }}
             </span>
           </li>
