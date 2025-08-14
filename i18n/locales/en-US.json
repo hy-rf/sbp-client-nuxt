@@ -1,5 +1,8 @@
 {
   "welcome": "Welcome",
+  "auth": {
+    "loading": "Loading"
+  },
   "nav": {
     "home": "Home",
     "posts": "Posts",
@@ -12,11 +15,6 @@
   },
   "posts": {
     "title": "Posts",
-    "create": "Create Post",
-    "edit": "Edit Post",
-    "delete": "Delete Post",
-    "view": "View Post",
-    "list": "List of Posts",
     "author": "By ",
     "created_at": "Created at",
     "search": "Search Posts",
@@ -34,5 +32,8 @@
     "author_info": "Author Info",
     "username": "User name: ",
     "replies": "Replies"
+  },
+  "reply": {
+    "author": "Author"
   }
 }

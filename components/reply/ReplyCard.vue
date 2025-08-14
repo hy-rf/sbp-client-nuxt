@@ -44,13 +44,18 @@ const submitReply = async () => {
 };
 
 const showReplyForm = ref(false);
+const showReplies = ref(true);
+
 </script>
 
 <template>
-  <li>
-    <p>{{ reply.id }}</p>
-    <strong>{{ reply.author?.username || "Anon" }}</strong
-    >:
+  <li :key="reply.id" class="reply-card">
+    <div>
+        {{ t("reply.author") }}:
+        <NuxtLink :to="`/user/${reply.author.id}`">
+          {{ reply.author.username }}
+        </NuxtLink>
+      </div>
     <p>{{ reply.content }}</p>
     <span class="text-xs text-gray-500">{{ reply.created.toString() }}</span>
     <button @click="showReplyForm = !showReplyForm">Reply</button>
@@ -66,7 +71,7 @@ const showReplyForm = ref(false);
       <button type="submit" class="reply-btn">Reply</button>
       <div v-if="replyMessage" class="reply-message">{{ replyMessage }}</div>
     </form>
-    <ReplyList :key="refreshKey" :reply-id="reply.id.toString()"></ReplyList>
+    <ReplyList v-if="showReplies" :key="refreshKey" :reply-id="reply.id.toString()"></ReplyList>
   </li>
 </template>
 

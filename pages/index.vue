@@ -145,51 +145,56 @@ function prevPage() {
   <div class="container">
     <h1>{{ t("posts.search") }}</h1>
     <!-- Filters bound to form state, not store, except  -->
-     <div class="filters-container">
-
-       <form
-         class="filters"
-         @submit.prevent="performSearch"
-         aria-label="Post search filters"
-       >
-         <div class="search-fields">
-           <input v-model="form.keyword" :placeholder="t('posts.filter.title_content')" />
-           <input v-model="form.authorName" :placeholder="t('posts.filter.author')" />
-         </div>
-         <br />
-         <div class="date-filters">
-           <label
-             >{{ t("posts.filter.created_at_start") }}
-             <input type="datetime-local" v-model="form.createdAfter" />
-           </label>
-           <label
-             >{{ t("posts.filter.created_at_end") }}
-             <input type="datetime-local" v-model="form.createdBefore" />
-           </label>
-         </div>
-         <div class="sort-options">
-           <div>
-             <select v-model="form.sortBy">
-               <option value="createdAt">Created At</option>
-               <option value="updatedAt">Updated At</option>
-             </select>
-             <select v-model="form.order">
-               <option value="desc">Descending</option>
-               <option value="asc">Ascending</option>
-             </select>
-           </div>
-         </div>
-         <button type="submit">{{ t("posts.search") }}</button>
-       </form>
-      </div>
-      <label for="pagesize">{{ t("posts.page_size") }}</label>
-      <select id="pagesize" v-model="searchStore.size" @change="changeSize">
-        <option :value="1">1</option>
-        <option :value="5">5</option>
-        <option :value="10">10</option>
-        <option :value="20">20</option>
-        <option :value="50">50</option>
-      </select>
+    <div class="filters-container">
+      <form
+        class="filters"
+        @submit.prevent="performSearch"
+        aria-label="Post search filters"
+      >
+        <div class="search-fields">
+          <input
+            v-model="form.keyword"
+            :placeholder="t('posts.filter.title_content')"
+          />
+          <input
+            v-model="form.authorName"
+            :placeholder="t('posts.filter.author')"
+          />
+        </div>
+        <br />
+        <div class="date-filters">
+          <label
+            >{{ t("posts.filter.created_at_start") }}
+            <input type="datetime-local" v-model="form.createdAfter" />
+          </label>
+          <label
+            >{{ t("posts.filter.created_at_end") }}
+            <input type="datetime-local" v-model="form.createdBefore" />
+          </label>
+        </div>
+        <div class="sort-options">
+          <div>
+            <select v-model="form.sortBy">
+              <option value="createdAt">Created At</option>
+              <option value="updatedAt">Updated At</option>
+            </select>
+            <select v-model="form.order">
+              <option value="desc">Descending</option>
+              <option value="asc">Ascending</option>
+            </select>
+          </div>
+        </div>
+        <button type="submit">{{ t("posts.search") }}</button>
+      </form>
+    </div>
+    <label for="pagesize">{{ t("posts.page_size") }}</label>
+    <select id="pagesize" v-model="searchStore.size" @change="changeSize">
+      <option :value="1">1</option>
+      <option :value="5">5</option>
+      <option :value="10">10</option>
+      <option :value="20">20</option>
+      <option :value="50">50</option>
+    </select>
 
     <!-- Results -->
     <div v-if="pending">Loading...</div>
@@ -198,7 +203,7 @@ function prevPage() {
 
     <div v-else>
       <section aria-label="Posts list">
-        <PostCard v-for="post in posts" :key="post.id"  :post="post"></PostCard>
+        <PostCard v-for="post in posts" :key="post.id" :post="post"></PostCard>
       </section>
 
       <!-- Pagination -->

@@ -26,7 +26,7 @@ const runtimeConfig = useRuntimeConfig();
 
 <template>
   <header>
-    <nav class="navbar">
+    <nav>
       <div class="nav-left">
         <ul class="nav-links">
           <li>
@@ -70,13 +70,16 @@ const runtimeConfig = useRuntimeConfig();
         </div>
 
         <span class="user-info">
-          <template v-if="userStore.loaded">
+          <template v-if="userStore.username">
             <span>👤 {{ userStore.username }}</span>
-            <button @click="userStore.logout">{{ t("nav.logout") }}</button>
+            <button class="logout-button" @click="userStore.logout">{{ t("nav.logout") }}</button>
           </template>
-          <template v-else>
+          <template v-if="userStore.loaded && !userStore.loading && !userStore.username">
             <NuxtLink to="/login">{{ t("nav.login") }}</NuxtLink>
             <NuxtLink to="/register">{{ t("nav.register") }}</NuxtLink>
+          </template>
+          <template v-if="userStore.loading">
+            <p>Loading</p>
           </template>
         </span>
       </div>
@@ -93,15 +96,16 @@ header {
   position: sticky;
   top: 0;
   z-index: 100;
-  background: #b0bdff;
+  background: #dcfcda;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
+  height: 70px;
 }
 
-.navbar {
+nav {
   display: flex;
+  height: 100%;
   justify-content: space-between;
   align-items: center;
-  max-width: 1100px;
   margin: 0 auto;
   padding: 0.5rem 2rem;
 }
@@ -203,6 +207,11 @@ header {
 .loading {
   color: #aaa;
   font-size: 0.95rem;
+}
+
+.logout-button {
+  height: 25px;
+  padding: 0 0.5rem;
 }
 
 .main-content {

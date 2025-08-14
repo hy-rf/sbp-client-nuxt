@@ -26,7 +26,7 @@ const showReply = ref(true);
 
 <template>
   <ul>
-    <button v-if="replies.length" @click="showReply = !showReply">
+    <button v-if="replies.length && replyId" @click="showReply = !showReply">
       {{ showReply ? "hide" : "show" }}
     </button>
     <ReplyCard v-if="showReply" v-for="r in replies" :key="r.id" :reply="r" />

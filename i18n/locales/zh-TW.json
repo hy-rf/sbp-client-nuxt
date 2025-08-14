@@ -1,5 +1,8 @@
 {
   "welcome": "歡迎光臨",
+  "auth": {
+    "loading": "載入中"
+  },
   "nav": {
     "home": "首頁",
     "posts": "文章專區",
@@ -34,5 +37,8 @@
     "author_info": "作者資訊",
     "username": "使用者名稱：",
     "replies": "回覆"
+  },
+  "reply": {
+    "author": "作者"
   }
 }
